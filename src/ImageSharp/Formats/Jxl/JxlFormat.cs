@@ -1,8 +1,6 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using System.Collections.Generic;
-
 namespace SixLabors.ImageSharp.Formats.Jxl;
 
 internal class JxlFormat : IImageFormat
