@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 #pragma warning disable SA1649 // File name should match first type name
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
+namespace SixLabors.ImageSharp.Formats.Jxl;
 
 [InlineArray(3)]
 internal struct InlineArray3<T>
