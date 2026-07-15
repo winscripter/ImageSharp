@@ -2,6 +2,7 @@
 // Licensed under the Six Labors Split License.
 
 using System.Diagnostics;
+using SixLabors.ImageSharp.Formats.Jxl.Memory;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Ac;
 
