@@ -2,42 +2,40 @@
 // Licensed under the Six Labors Split License.
 
 using System.Diagnostics;
-using SixLabors.ImageSharp.Formats.Jxl.Memory;
+using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Ac;
 
-internal sealed class JxlAcStrategyImage
+internal sealed class JxlAcStrategyImage : IDisposable
 {
     private const byte Invalid = byte.MaxValue; // 255
 
     private JxlImageB? layers;
-    private readonly Memory<byte> row;
-    private readonly int stride;
+    private Memory<byte> row;
+    private int stride;
 
-    public JxlMemoryManager MemoryManager => this.layers.MemoryManager;
+    public int XSize => this.layers!.XSize;
 
-    public int XSize => this.layers.XSize;
+    public int YSize => this.layers!.YSize;
 
-    public int YSize => this.layers.YSize;
-
-    public int PixelsPerRow => this.layers.PixelsPerRow;
+    public int PixelsPerRow => this.layers!.PixelsPerRow;
 
     public JxlAcStrategyRow GetRow(int y, int xPrefix = 0)
     {
-        ReadOnlyMemory<byte> layerRow = this.layers.GetRow(y);
+        ReadOnlyMemory<byte> layerRow = this.layers!.GetRowBytesMemory(y);
         ReadOnlyMemory<byte> row = layerRow[xPrefix..];
 
         return new JxlAcStrategyRow(row);
     }
 
-    public static JxlAcStrategyImage Create(JxlMemoryManager memoryManager, int xSize, int ySize)
+    public static JxlAcStrategyImage Create(Configuration memoryManager, int xSize, int ySize)
     {
         JxlAcStrategyImage image = new()
         {
-            layers = JxlImageB.Create(memoryManager, xSize, ySize)
+            layers = new JxlImageB(memoryManager, xSize, ySize)
         };
 
-        image.row = image.layers.GetRow(0);
+        image.row = image.layers.GetRowBytesMemory(0);
         image.stride = image.layers.PixelsPerRow;
 
         return image;
@@ -48,11 +46,11 @@ internal sealed class JxlAcStrategyImage
         int value = 0;
         int compare = ((int)type << 1) | 1;
 
-        for (int y = 0; y < this.layers.YSize; y++)
+        for (int y = 0; y < this.layers!.YSize; y++)
         {
-            ReadOnlySpan<byte> row = this.layers.GetRowSpan(y);
+            ReadOnlySpan<byte> row = this.layers!.GetRow(y);
 
-            for (int x = 0; x < this.layers.XSize; x++)
+            for (int x = 0; x < this.layers!.XSize; x++)
             {
                 if (row[x] == compare)
                 {
@@ -100,7 +98,7 @@ internal sealed class JxlAcStrategyImage
 #if DEBUG
         JxlAcStrategy strategy = new(type);
 
-        Debug.Assert(y + strategy.CoveredBlocksY <= this.layers.YSize, "Invalid range");
+        Debug.Assert(y + strategy.CoveredBlocksY <= this.layers!.YSize, "Invalid range");
         Debug.Assert(x + strategy.CoveredBlocksX <= this.layers.XSize, "Invalid range");
 #endif
 
@@ -112,4 +110,10 @@ internal sealed class JxlAcStrategyImage
     public void FillDct8() => this.FillDct8(in this.layers.GetRectangle());
 
     public void FillInvalid() => this.FillImage(Invalid, this.layers);
+
+    public void Dispose()
+    {
+        this.layers?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }
