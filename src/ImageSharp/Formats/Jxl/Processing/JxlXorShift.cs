@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
-internal sealed class JpegXorShift
+internal sealed class JxlXorShift
 {
     private readonly ulong[] s0 = new ulong[8];
     private readonly ulong[] s1 = new ulong[8];
