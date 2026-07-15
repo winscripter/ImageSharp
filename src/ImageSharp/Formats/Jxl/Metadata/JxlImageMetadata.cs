@@ -123,4 +123,6 @@ internal sealed class JxlImageMetadata : IJxlFields
 
         this.Modular16BitBufferSufficient = bits <= 12;
     }
+
+    public bool Visit(JxlVisitor visitor) => throw new NotImplementedException();
 }
