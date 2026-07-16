@@ -5,31 +5,12 @@ using System.Runtime.CompilerServices;
 
 namespace SixLabors.ImageSharp.Formats.Jxl;
 
-internal struct JxlFrameDimensions
+internal sealed class JxlFrameDimensions
 {
     public const int BlockDimensions = 8;
     public const int DctBlockSize = BlockDimensions * BlockDimensions;
     public const int GroupDimensions = 256;
     public const int GroupDimensionsInBlocks = GroupDimensions / BlockDimensions;
-
-    public int XSize;
-    public int YSize;
-    public int XSizeUpsampled;
-    public int YSizeUpsampled;
-    public int XSizeUpsampledPadded;
-    public int YSizeUpsampledPadded;
-    public int XSizePadded;
-    public int YSizePadded;
-    public int XSizeBlocks;
-    public int YSizeBlocks;
-    public int XSizeGroups;
-    public int YSizeGroups;
-    public int XSizeDcGroups;
-    public int YSizeDcGroups;
-    public int NumGroups;
-    public int NumDcGroups;
-    public int GroupDimension;
-    public int DcGroupDimension;
 
     public JxlFrameDimensions(int xSizePixel, int ySizePixel, int groupSizeShift, int maxHorizontalShift, int maxVerticalShift, bool modularMode, int upsampling)
     {
@@ -59,6 +40,42 @@ internal struct JxlFrameDimensions
         this.NumGroups = this.XSizeGroups * this.YSizeGroups;
         this.NumDcGroups = this.XSizeDcGroups * this.YSizeDcGroups;
     }
+
+    public int XSize { get; set; }
+
+    public int YSize { get; set; }
+
+    public int XSizeUpsampled { get; set; }
+
+    public int YSizeUpsampled { get; set; }
+
+    public int XSizeUpsampledPadded { get; set; }
+
+    public int YSizeUpsampledPadded { get; set; }
+
+    public int XSizePadded { get; set; }
+
+    public int YSizePadded { get; set; }
+
+    public int XSizeBlocks { get; set; }
+
+    public int YSizeBlocks { get; set; }
+
+    public int XSizeGroups { get; set; }
+
+    public int YSizeGroups { get; set; }
+
+    public int XSizeDcGroups { get; set; }
+
+    public int YSizeDcGroups { get; set; }
+
+    public int NumGroups { get; set; }
+
+    public int NumDcGroups { get; set; }
+
+    public int GroupDimension { get; set; }
+
+    public int DcGroupDimension { get; set; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int DivCeil(int x, int y) => x / y;
