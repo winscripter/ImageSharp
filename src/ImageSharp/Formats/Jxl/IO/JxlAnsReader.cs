@@ -100,7 +100,7 @@ internal static class JxlAnsReader
                 if (symbols[0] == symbols[1])
                 {
                     Debug.Fail("Corrupt data");
-
+                    counts.Dispose();
                     return null;
                 }
 
@@ -192,14 +192,14 @@ internal static class JxlAnsReader
             if (omitPos < 0)
             {
                 Debug.Fail("The histogram is corrupt or invalid.");
-
+                counts.Dispose();
                 return null;
             }
 
             if (omitPos + 1 < length && logCounts[omitPos + 1] == JxlAnsConstants.AnsLogTableSize)
             {
                 Debug.Fail("The histogram is corrupt or invalid.");
-
+                counts.Dispose();
                 return null;
             }
 
@@ -246,7 +246,7 @@ internal static class JxlAnsReader
             if (countsSpan[omitPos] <= 0)
             {
                 Debug.Fail("The histogram count is incorrect.");
-
+                counts.Dispose();
                 return null;
             }
         }
