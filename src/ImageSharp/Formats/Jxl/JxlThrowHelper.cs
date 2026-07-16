@@ -7,8 +7,6 @@ namespace SixLabors.ImageSharp.Formats.Jxl;
 
 internal static class JxlThrowHelper
 {
-    private static readonly EndOfStreamException EndOfStream = new();
-
     [DoesNotReturn]
-    public static void ThrowEndOfStream() => throw EndOfStream;
+    public static void ThrowEndOfStream() => throw new EndOfStreamException();
 }
