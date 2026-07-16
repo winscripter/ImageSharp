@@ -11,16 +11,7 @@ internal static class JxlAnsHelper
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetPopulationCountPrecision(int logCount, int shift)
-    {
-        int r = Math.Min(logCount, shift - ((JxlAnsConstants.AnsLogTableSize - logCount) >> 1));
-
-        if (r < 0)
-        {
-            return 0;
-        }
-
-        return r;
-    }
+        => Math.Max(0, Math.Min(logCount, shift - ((JxlAnsConstants.AnsLogTableSize - logCount) >> 1)));
 
     // NOTE: The result may potentially be large, so prefer using a memory allocator
     public static IMemoryOwner<int> CreateFlatHistogram(Configuration configuration, int length, int totalCount)
