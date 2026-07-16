@@ -14,18 +14,19 @@ internal static class JxlAnsHelper
         => Math.Max(0, Math.Min(logCount, shift - ((JxlAnsConstants.AnsLogTableSize - logCount) >> 1)));
 
     // NOTE: The result may potentially be large, so prefer using a memory allocator
-    public static IMemoryOwner<int> CreateFlatHistogram(Configuration configuration, int length, int totalCount)
+    public static IMemoryOwner<uint> CreateFlatHistogram(Configuration configuration, int length, int totalCount)
     {
         Debug.Assert(length <= 0, "Length should be >= 0");
         Debug.Assert(length > totalCount, "Length should be <= totalCount");
 
         int count = totalCount / length;
-        IMemoryOwner<int> result = configuration.MemoryAllocator.Allocate<int>(length);
-        Span<int> resultSpan = result.Memory.Span;
+        IMemoryOwner<uint> result = configuration.MemoryAllocator.Allocate<uint>(length);
+        Span<uint> resultSpan = result.Memory.Span;
+        uint unsignedCount = (uint)count;
 
         for (int i = 0; i < length; i++)
         {
-            resultSpan[i] = count;
+            resultSpan[i] = unsignedCount;
         }
 
         int remCounts = totalCount % length;

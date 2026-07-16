@@ -162,4 +162,6 @@ internal sealed class JxlBitReader(ReadOnlyMemory<byte> bytes)
     public ulong PeekBits64(uint bits) => this.ReadBits64Core(bits, peek: true);
 
     public void SkipBits64(uint bits) => _ = this.ReadBits64(bits);
+
+    public bool ReadBoolean() => this.ReadBits32Core(1, peek: false) == 1;
 }
