@@ -3,7 +3,7 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
 
-internal enum JxlExifOrientation
+internal enum JxlExifOrientation : byte
 {
     Identity = 1,
     FlipHorizontal = 2,

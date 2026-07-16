@@ -3,7 +3,7 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
 
-internal enum JxlExtraChannel
+internal enum JxlExtraChannel : byte
 {
     Alpha,
     Depth,

@@ -3,7 +3,7 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Splines;
 
-internal enum JxlSplineEntropyContext
+internal enum JxlSplineEntropyContext : byte
 {
     QuantizationAdjustment,
     StartingPosition,
