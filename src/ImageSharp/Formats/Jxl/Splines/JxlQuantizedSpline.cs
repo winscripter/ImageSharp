@@ -312,14 +312,14 @@ internal sealed class JxlQuantizedSpline : IDisposable
 
         bool TryDecodeDct(ReadOnlySpan<byte> contextMap, Span<int> dct)
         {
-            const int invalidConstant = int.MinValue;
+            const int invalidCoefficient = int.MinValue;
 
             for (int i = 0; i < 32; i++)
             {
                 dct[i] = UnpackSigned(decoder.ReadHybridUnsignedInteger(DctContext, br, contextMap));
-                if (dct[i] == invalidConstant)
+                if (dct[i] == invalidCoefficient)
                 {
-                    Debug.Fail("The DCT constant is invalid");
+                    Debug.Fail("The DCT coefficient is invalid");
 
                     return false;
                 }
