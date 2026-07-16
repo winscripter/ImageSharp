@@ -4,7 +4,6 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using static SixLabors.ImageSharp.Formats.Jxl.IO.JxlAnsConstants;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.IO;
 
@@ -13,7 +12,7 @@ internal static class JxlAnsHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetPopulationCountPrecision(int logCount, int shift)
     {
-        int r = Math.Min(logCount, shift - ((AnsLogTableSize - logCount) >> 1));
+        int r = Math.Min(logCount, shift - ((JxlAnsConstants.AnsLogTableSize - logCount) >> 1));
 
         if (r < 0)
         {
@@ -111,7 +110,7 @@ internal static class JxlAnsHelper
             int value = distribution[sym];
             sum += value;
 
-            if (value == AnsTableSize)
+            if (value == JxlAnsConstants.AnsTableSize)
             {
                 if (singleSymbol != -1)
                 {
@@ -143,7 +142,7 @@ internal static class JxlAnsHelper
                 jxlEntry.Cutoff = 0;
                 jxlEntry.Offsets1 = (ushort)(entrySize * i);
                 jxlEntry.Frequency0 = 0;
-                jxlEntry.Frequency1XorFrequency0 = AnsTableSize;
+                jxlEntry.Frequency1XorFrequency0 = JxlAnsConstants.AnsTableSize;
             }
 
             return true;
