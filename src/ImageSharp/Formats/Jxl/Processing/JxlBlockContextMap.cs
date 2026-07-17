@@ -2,7 +2,6 @@
 // Licensed under the Six Labors Split License.
 
 using System.Runtime.CompilerServices;
-using SixLabors.ImageSharp.Formats.Jxl.Coefficients;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
