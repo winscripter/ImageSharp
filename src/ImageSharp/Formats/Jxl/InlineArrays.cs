@@ -39,3 +39,12 @@ internal struct InlineArray210<T>
 {
     private T first;
 }
+
+/// <summary>
+/// Used by JxlWeightsSeparable5
+/// </summary>
+[InlineArray(12)]
+internal struct InlineArray12<T>
+{
+    private T first;
+}
