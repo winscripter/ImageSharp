@@ -8,7 +8,7 @@ using static SixLabors.ImageSharp.Formats.Jxl.JxlFrameDimensions;
 
 #pragma warning disable SA1405 // Debug.Assert should provide message text
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Ac;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal struct JxlAcStrategy

@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 #pragma warning disable SA1405 // Debug.Assert should provide message text
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Ac;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 /// <summary>
 /// AC context

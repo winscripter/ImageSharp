@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Ac;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 internal sealed class JxlAcStrategyImage : IDisposable
 {

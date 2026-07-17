@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Coefficients;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 internal static class JxlForwardCoefficientOrder
 {
