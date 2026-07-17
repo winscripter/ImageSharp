@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace SixLabors.ImageSharp.Formats.Jxl.Memory;
 
 // NOTE: Do not seal this class.
-internal class JxlImage3<T>
+internal class JxlImage3<T> : IDisposable
     where T : unmanaged
 {
     private const int PlaneCount = 3;
@@ -82,4 +82,14 @@ internal class JxlImage3<T>
     [Conditional("DEBUG")]
     private void PlaneRowBoundsCheck(int c, int y) =>
         Debug.Assert(c < PlaneCount && y < this.YSize, "The bounds check has failed");
+
+    public void Dispose()
+    {
+        foreach (JxlPlane<T> plane in this.planes)
+        {
+            plane.Dispose();
+        }
+
+        GC.SuppressFinalize(this);
+    }
 }
