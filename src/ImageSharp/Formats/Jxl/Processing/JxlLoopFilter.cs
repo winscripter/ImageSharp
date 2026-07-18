@@ -12,6 +12,9 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 /// </summary>
 internal sealed class JxlLoopFilter : IJxlFields
 {
+    private const int SigmaBorder = 1;
+    private const int SigmaPadding = 2;
+
     /// <summary>
     /// 4 * (sqrt(0.5)-1), so that Weight(sigma) = 0.5
     /// </summary>
@@ -206,7 +209,7 @@ internal sealed class JxlLoopFilter : IJxlFields
                     {
                         float sigma = sigmaQuant * this.EpfSharpLookup[sharpnessRow[bx + ix + iy + sharpnessStride]];
                         sigma = MathF.Min(-1e-4f, sigma);
-                        sigmaRow[bx + ix + SigmaPadding + (iy + SigmaPadding) * sigmaStride] = 1.0f / sigma;
+                        sigmaRow[bx + ix + SigmaPadding + ((iy + SigmaPadding) * sigmaStride)] = 1.0f / sigma;
                     }
                 }
 
@@ -214,7 +217,7 @@ internal sealed class JxlLoopFilter : IJxlFields
                 {
                     for (int iy = 0; iy < acs.CoveredBlocksY; iy++)
                     {
-                        LeftMirror(sigmaRow.Slice(SigmaPadding + (iy + SigmaPadding) * SigmaStride), sigmaBorder);
+                        LeftMirror(sigmaRow[(SigmaPadding + ((iy + SigmaPadding) * sigmaStride))..], SigmaBorder);
                     }
                 }
 
@@ -222,7 +225,7 @@ internal sealed class JxlLoopFilter : IJxlFields
                 {
                     for (int iy = 0; iy < acs.CoveredBlocksY; iy++)
                     {
-                        RightMirror(sigmaRow.Slice(SigmaPadding + bx + llfX + (iy + SigmaPadding) * sigmaStride), SigmaBorder);
+                        RightMirror(sigmaRow[(SigmaPadding + bx + llfX + ((iy + SigmaPadding) * sigmaStride))..], SigmaBorder);
                     }
                 }
 
@@ -238,7 +241,7 @@ internal sealed class JxlLoopFilter : IJxlFields
                     for (int iy = 0; iy < SigmaBorder; iy++)
                     {
                         sigmaRow.Slice(offsetBefore + ((SigmaPadding - 1 - iy) * sigmaStride), num)
-                                .CopyTo(sigmaRow.Slice(offsetBefore + ((SigmaPadding + iy) * sigmaStride)));
+                                .CopyTo(sigmaRow[(offsetBefore + ((SigmaPadding + iy) * sigmaStride))..]);
                     }
                 }
 
@@ -246,8 +249,8 @@ internal sealed class JxlLoopFilter : IJxlFields
                 {
                     for (int iy = 0; iy < SigmaBorder; iy++)
                     {
-                        sigmaRow.Slice(offsetBefore + (sigmaStride * (acs.CoveredBlocksX + SigmaPadding + iy)))
-                                .CopyTo(sigmaRow.Slice(offsetBefore + (sigmaStride * (acs.CoveredBlocksY + SigmaPadding - 1 - iy))));
+                        sigmaRow[(offsetBefore + (sigmaStride * (acs.CoveredBlocksX + SigmaPadding + iy)))..]
+                                .CopyTo(sigmaRow[(offsetBefore + (sigmaStride * (acs.CoveredBlocksY + SigmaPadding - 1 - iy)))..]);
                     }
                 }
             }
