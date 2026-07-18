@@ -14,7 +14,16 @@ internal sealed class JxlBitReader(ReadOnlyMemory<byte> bytes)
     private ulong buffer;
     private uint bufferRemainingBits;
     private int pointer;
-    private bool endOfStream;
+
+    /// <summary>
+    /// Gets a value indicating whether this marks an end of stream.
+    /// </summary>
+    public bool IsEndOfStream { get; private set; }
+
+    /// <summary>
+    /// Gets the total number of bits consumed.
+    /// </summary>
+    public long TotalBitsConsumed => ((long)this.pointer * 8) + (64 - this.bufferRemainingBits);
 
     /// <summary>
     /// Fetches a new buffer.
@@ -29,7 +38,7 @@ internal sealed class JxlBitReader(ReadOnlyMemory<byte> bytes)
             // we don't have any more data... mark an end of stream
             this.buffer = 0;
             this.bufferRemainingBits = 0;
-            this.endOfStream = true;
+            this.IsEndOfStream = true;
             return;
         }
 
@@ -66,7 +75,7 @@ internal sealed class JxlBitReader(ReadOnlyMemory<byte> bytes)
         Debug.Assert(n <= 64, "Too many bits to pack into ulong");
         this.MaybeRefill();
 
-        if (this.endOfStream)
+        if (this.IsEndOfStream)
         {
             JxlThrowHelper.ThrowEndOfStream();
         }
@@ -111,7 +120,7 @@ internal sealed class JxlBitReader(ReadOnlyMemory<byte> bytes)
         Debug.Assert(n <= 32, "Too many bits to pack into uint");
         this.MaybeRefill();
 
-        if (this.endOfStream)
+        if (this.IsEndOfStream)
         {
             JxlThrowHelper.ThrowEndOfStream();
         }
@@ -157,11 +166,11 @@ internal sealed class JxlBitReader(ReadOnlyMemory<byte> bytes)
 
     public void SkipBits32(uint bits) => _ = this.ReadBits32(bits);
 
-    public ulong ReadBits64(uint bits) => this.ReadBits64Core(bits, peek: false);
+    public ulong ReadBits64(ulong bits) => this.ReadBits64Core((uint)bits, peek: false);
 
-    public ulong PeekBits64(uint bits) => this.ReadBits64Core(bits, peek: true);
+    public ulong PeekBits64(ulong bits) => this.ReadBits64Core((uint)bits, peek: true);
 
-    public void SkipBits64(uint bits) => _ = this.ReadBits64(bits);
+    public void SkipBits64(ulong bits) => _ = this.ReadBits64(bits);
 
     public bool ReadBoolean() => this.ReadBits32Core(1, peek: false) == 1;
 }
