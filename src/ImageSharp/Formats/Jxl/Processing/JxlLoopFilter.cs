@@ -237,7 +237,7 @@ internal sealed class JxlLoopFilter : IJxlFields
                 {
                     for (int iy = 0; iy < SigmaBorder; iy++)
                     {
-                        sigmaRow.Slice(offsetBefore + (SigmaPadding - 1 - iy) * sigmaStride, num)
+                        sigmaRow.Slice(offsetBefore + ((SigmaPadding - 1 - iy) * sigmaStride), num)
                                 .CopyTo(sigmaRow.Slice(offsetBefore + ((SigmaPadding + iy) * sigmaStride)));
                     }
                 }
