@@ -82,6 +82,8 @@ internal struct JxlAcStrategy
 
     public readonly int Log2CoveredBlocks => Log2CoveredBlocksLookup[(int)this.Strategy];
 
+    public readonly bool IsFirstBlock => this.isFirst;
+
     public readonly JxlAcStrategyType Strategy { get; }
 
     public void ComputeNaturalCoefficientOrder(ref int order) => CoefficientOrderAndLookup(this, false, ref order);
