@@ -5,8 +5,19 @@ using SixLabors.ImageSharp.Formats.Jxl.Fields;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
 
+/// <summary>
+/// Represents the JPEG XL Bit Depth image metadata.
+/// </summary>
 internal sealed class JxlBitDepth : IJxlFields
 {
+    private uint bitsPerSample;
+    private uint exponentBitsPerSample;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JxlBitDepth"/> class.
+    /// </summary>
+    public JxlBitDepth() => JxlBundle.Init(this);
+
     /// <summary>
     /// Gets or sets a value indicating whether
     /// the original (uncompressed) samples are floating point or
@@ -18,7 +29,11 @@ internal sealed class JxlBitDepth : IJxlFields
     /// Gets or sets the bit depth of the original (uncompressed) image samples.
     /// Must be in the range [1, 32].
     /// </summary>
-    public int BitsPerSample { get; set; }
+    public uint BitsPerSample
+    {
+        get => this.bitsPerSample;
+        set => this.bitsPerSample = value;
+    }
 
     /// <summary>
     /// <para>
@@ -36,7 +51,79 @@ internal sealed class JxlBitDepth : IJxlFields
     ///   [2, 8] and amount of mantissa bits must be in the range [2, 23].
     /// </para>
     /// </summary>
-    public int ExponentBitsPerSample { get; set; }
+    public uint ExponentBitsPerSample
+    {
+        get => this.exponentBitsPerSample;
+        set => this.exponentBitsPerSample = value;
+    }
 
-    public bool Visit(JxlVisitor visitor) => throw new NotImplementedException();
+    public bool Visit(JxlVisitor visitor)
+    {
+        if (!this.FloatingPointSample)
+        {
+            bool successful = visitor.U32(
+                JxlFieldExpressions.Value(8u),
+                JxlFieldExpressions.Value(10u),
+                JxlFieldExpressions.Value(12u),
+                JxlFieldExpressions.BitsOffset(6u, 1u),
+                8u,
+                ref this.bitsPerSample);
+
+            if (!successful)
+            {
+                return false;
+            }
+
+            this.exponentBitsPerSample = 0;
+        }
+        else
+        {
+            if (!visitor.U32(
+                JxlFieldExpressions.Value(32u),
+                JxlFieldExpressions.Value(16u),
+                JxlFieldExpressions.Value(24u),
+                JxlFieldExpressions.BitsOffset(6u, 1u),
+                32u,
+                ref this.bitsPerSample))
+            {
+                return false;
+            }
+
+            this.exponentBitsPerSample--;
+
+            if (!visitor.Bits(4, 7, ref this.exponentBitsPerSample))
+            {
+                return false;
+            }
+
+            this.exponentBitsPerSample++;
+        }
+
+        if (this.FloatingPointSample)
+        {
+            if (this.exponentBitsPerSample is < 2 or > 8)
+            {
+                DebugGuard.IsTrue(false, "Invalid exponent_bits_per_sample");
+
+                return false;
+            }
+
+            int mantissaBits = (int)this.bitsPerSample - (int)this.exponentBitsPerSample - 1;
+
+            if (mantissaBits is < 2 or > 23)
+            {
+                DebugGuard.IsTrue(false, "Invalid bits_per_sample");
+
+                return false;
+            }
+        }
+        else if (this.bitsPerSample > 31)
+        {
+            DebugGuard.IsTrue(false, "Invalid bits_per_sample");
+
+            return false;
+        }
+
+        return true;
+    }
 }
