@@ -83,6 +83,7 @@ internal static class JxlU64Coder
                 value >>= 8;
                 shift += 8;
             }
+
             if (value > 0)
             {
                 // 1 continuation bit + 4 payload bits

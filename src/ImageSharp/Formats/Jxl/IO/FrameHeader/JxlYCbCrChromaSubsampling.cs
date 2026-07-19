@@ -3,7 +3,7 @@
 
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.IO;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;
 
 /// <summary>
 /// Gets the Y'Cb'Cr chroma subsampling information as part

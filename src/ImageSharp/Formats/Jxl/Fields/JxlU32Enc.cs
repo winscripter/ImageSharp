@@ -1,8 +1,6 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using System.Diagnostics;
-
 namespace SixLabors.ImageSharp.Formats.Jxl.Fields;
 
 internal readonly struct JxlU32Enc
@@ -19,7 +17,9 @@ internal readonly struct JxlU32Enc
 
     public JxlU32Distribution GetDistribution(int selector)
     {
-        Debug.Assert(selector < 4, "Selector out of range");
+        // This stuff is internal, so if argument check
+        // fails it's not a user error.
+        DebugGuard.MustBeLessThan(selector, 4, nameof(selector));
 
         return this.d[selector];
     }
