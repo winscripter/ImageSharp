@@ -3,7 +3,7 @@
 
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 
 /// <summary>
 /// Represents the JPEG XL Bit Depth image metadata.

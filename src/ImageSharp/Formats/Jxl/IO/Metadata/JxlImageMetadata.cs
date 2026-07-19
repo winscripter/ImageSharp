@@ -2,9 +2,9 @@
 // Licensed under the Six Labors Split License.
 
 using System.Diagnostics;
-using SixLabors.ImageSharp.Formats.Jxl.IO;
+using SixLabors.ImageSharp.Formats.Jxl.Fields;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 
 internal sealed class JxlImageMetadata : IJxlFields
 {

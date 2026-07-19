@@ -1,19 +1,19 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 
 internal sealed class JxlCodecMetadata
 {
     public JxlImageMetadata? ImageMetadata { get; set; }
 
-    public SizeHeader Size { get; set; }
+    public JxlSizeHeader? Size { get; set; }
 
     public JxlCustomTransformData? CustomTransformData { get; set; }
 
-    public int XSize => this.Size.XSize;
+    public int XSize => this.Size?.XSize ?? 0;
 
-    public int YSize => this.Size.YSize;
+    public int YSize => this.Size?.YSize ?? 0;
 
     public int GetOrientedPreviewXSize(bool keepOrientation)
     {

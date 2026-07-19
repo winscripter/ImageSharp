@@ -4,7 +4,7 @@
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 using SixLabors.ImageSharp.Formats.Jxl.Processing;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 
 internal sealed class JxlOpsinInverseMatrix : IJxlFields
 {

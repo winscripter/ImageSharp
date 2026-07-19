@@ -1,9 +1,9 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using SixLabors.ImageSharp.Formats.Jxl.IO;
+using SixLabors.ImageSharp.Formats.Jxl.Fields;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Metadata;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 
 internal sealed class JxlToneMapping : IJxlFields
 {
@@ -15,7 +15,7 @@ internal sealed class JxlToneMapping : IJxlFields
 
     public bool RelativeToMaxDisplay { get; set; }
 
-    public float LinearBelow { get; set;}
+    public float LinearBelow { get; set; }
 
     public bool Visit(JxlVisitor visitor) => throw new NotImplementedException();
 }
