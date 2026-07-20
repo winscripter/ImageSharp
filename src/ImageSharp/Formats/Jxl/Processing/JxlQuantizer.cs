@@ -369,11 +369,17 @@ internal sealed class JxlQuantizer
         {
             if (rawQuantField.GetSize() != qf.GetSize())
             {
+                data.Dispose();
+                deviations.Dispose();
+
                 return false;
             }
 
             this.SetQuantField(qf, qf.GetRectangle(), rawQuantField);
         }
+
+        data.Dispose();
+        deviations.Dispose();
 
         return true;
     }
