@@ -55,6 +55,19 @@ internal struct JxlMatrix3x3F
     /// </summary>
     private float e22;
 
+    internal JxlMatrix3x3F(float[][] array)
+    {
+        this.e00 = array[0][0];
+        this.e01 = array[0][1];
+        this.e02 = array[0][2];
+        this.e10 = array[1][0];
+        this.e11 = array[1][1];
+        this.e12 = array[1][2];
+        this.e20 = array[2][0];
+        this.e21 = array[2][1];
+        this.e22 = array[2][2];
+    }
+
     /// <summary>
     /// Wraps all these values into a Span.
     /// </summary>
