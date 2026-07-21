@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static SixLabors.ImageSharp.Formats.Jxl.JxlFrameDimensions;
+using static SixLabors.ImageSharp.Formats.Jxl.Processing.JxlFrameDimensions;
 
 #pragma warning disable SA1405 // Debug.Assert should provide message text
 
