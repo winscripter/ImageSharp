@@ -2,7 +2,7 @@
 // Licensed under the Six Labors Split License.
 
 using System.Runtime.CompilerServices;
-using SixLabors.ImageSharp.Formats.Jxl.IO;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Fields;
 
@@ -15,7 +15,6 @@ internal static class JxlF16Coder
     /// Always returns 16, which is the maximum possible encoded bits.
     /// The F16 coder always reads 16 bits from the bitstream.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int MaxEncodedBits() => 16;
 
     /// <summary>
@@ -24,7 +23,6 @@ internal static class JxlF16Coder
     /// Also stores the maximum encodeable bits into encodedBits (which is
     /// always 16).
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CanEncode(float value, ref int encodedBits)
     {
         encodedBits = MaxEncodedBits();

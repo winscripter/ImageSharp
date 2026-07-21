@@ -1,7 +1,6 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Fields;
@@ -14,7 +13,6 @@ internal static class JxlU32Coder
     /// <summary>
     /// Maximum number of writeable and/or readable bits in a variable-length integer.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int MaxEncodedBits(in JxlU32Enc enc)
     {
         int extraBits = 0;

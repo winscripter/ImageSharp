@@ -1,8 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using System.Runtime.CompilerServices;
-using SixLabors.ImageSharp.Formats.Jxl.IO;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Fields;
 
@@ -17,7 +16,6 @@ internal static class JxlBitsCoder
     /// </summary>
     // Looks like that's what the function does (fields.cc:406):
     // it returns whatever is passed to it.
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int MaxEncodedBits(int bits) => bits;
 
     public static bool CanEncode(int bits, uint value, ref int encodedBits)
