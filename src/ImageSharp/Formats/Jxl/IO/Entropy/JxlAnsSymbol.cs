@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.IO;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.Entropy;
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct JxlAnsSymbol(int value, int offset, int frequency)

@@ -1,7 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Splines;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Splines;
 
 internal struct JxlSplineSegmentSpan(int startInclusive, int endInclusive)
 {

@@ -3,7 +3,7 @@
 
 using System.Buffers;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Splines;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Splines;
 
 internal sealed class JxlSpline : IDisposable
 {

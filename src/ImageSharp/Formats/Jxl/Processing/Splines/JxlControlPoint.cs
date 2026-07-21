@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Splines;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Splines;
 
 /// <summary>
 /// A simple pair of first and second 32-bit signed integers

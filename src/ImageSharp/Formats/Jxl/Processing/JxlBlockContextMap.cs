@@ -23,9 +23,9 @@ internal sealed class JxlBlockContextMap
 
     public List<int>[] DcThresholds { get; } = [[], [], []];
 
-    public List<uint> QfThresholds { get; } = [];
+    public List<uint> QfThresholds { get; set; } = [];
 
-    public byte[] ContextMap { get; } = new byte[DefaultContextMap.Length];
+    public byte[] ContextMap { get; set; } = new byte[DefaultContextMap.Length];
 
     public int ContextCount { get; set; }
 

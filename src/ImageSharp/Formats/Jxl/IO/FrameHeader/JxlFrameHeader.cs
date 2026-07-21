@@ -7,7 +7,7 @@
 #pragma warning disable IDE0032 // Use auto property
 
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
-using SixLabors.ImageSharp.Formats.Jxl.Metadata;
+using SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 using SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;

@@ -5,7 +5,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Splines;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Splines;
 
 internal sealed class JxlQuantizedSpline : IDisposable
 {

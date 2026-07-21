@@ -4,7 +4,7 @@
 using System.Buffers.Binary;
 using System.Diagnostics;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.IO;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
 /// <summary>
 /// Represents a bitstream reader.

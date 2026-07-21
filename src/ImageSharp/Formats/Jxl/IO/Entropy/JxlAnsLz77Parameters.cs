@@ -3,7 +3,7 @@
 
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.IO;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO.Entropy;
 
 internal sealed class JxlAnsLz77Parameters : IJxlFields
 {
