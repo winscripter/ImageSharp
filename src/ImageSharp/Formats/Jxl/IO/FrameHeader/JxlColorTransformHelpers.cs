@@ -8,32 +8,24 @@ namespace SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;
 /// </summary>
 internal static class JxlColorTransformHelpers
 {
-    private static readonly int[][] JpegOrders =
-    [
-        [0, 0, 0], // Grayscale
-        [1, 0, 2], // Y'Cb'Cr
-        [0, 1, 2], // None
-        [0, 1, 2] // Anything else
-    ];
+    private static ReadOnlySpan<int> Grayscale => [0, 0, 0];
+
+    private static ReadOnlySpan<int> YCbCr => [1, 0, 2];
+
+    private static ReadOnlySpan<int> None => [0, 1, 2];
 
     public static ReadOnlySpan<int> GetJpegOrder(JxlColorTransform transform, bool isGraysacle)
     {
         if (isGraysacle)
         {
-            return JpegOrders[0];
+            return Grayscale;
         }
 
         if (transform == JxlColorTransform.YCbCr)
         {
-            return JpegOrders[1];
+            return YCbCr;
         }
-        else if (transform == JxlColorTransform.None)
-        {
-            return JpegOrders[2];
-        }
-        else
-        {
-            return JpegOrders[3];
-        }
+
+        return None;
     }
 }
