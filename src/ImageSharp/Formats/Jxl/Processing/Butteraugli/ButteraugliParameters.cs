@@ -9,18 +9,18 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Butteraugli;
 internal struct ButteraugliParameters()
 {
     /// <summary>
-    /// Multiplier for penalizing new HF artifacts more than
+    /// Gets or sets the multiplier for penalizing new HF artifacts more than
     /// blurring away features. Value of 1.0 represents neutral.
     /// </summary>
-    public float HfAsymmetry = 1f;
+    public float HfAsymmetry { get; set; } = 1f;
 
     /// <summary>
-    /// Multiplier for the psychovisual difference in the X channel.
+    /// Gets or sets the multiplier for the psychovisual difference in the X channel.
     /// </summary>
-    public float XMultiplier = 1f;
+    public float XMultiplier { get; set; } = 1f;
 
     /// <summary>
-    /// Number of nits that correspond to 1.0f input values.
+    /// Gets or sets the number of nits that correspond to 1.0f input values.
     /// </summary>
-    public float IntensityTarget = 80f;
+    public float IntensityTarget { get; set; } = 80f;
 }

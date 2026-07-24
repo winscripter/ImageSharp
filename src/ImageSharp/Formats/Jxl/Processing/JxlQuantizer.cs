@@ -4,7 +4,6 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
-using SixLabors.ImageSharp.Formats.Jxl.IO;
 using SixLabors.ImageSharp.Formats.Jxl.Memory;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
 

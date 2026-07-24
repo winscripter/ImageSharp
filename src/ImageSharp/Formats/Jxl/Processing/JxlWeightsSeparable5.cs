@@ -3,9 +3,11 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
-internal sealed class JxlWeightsSeparable5
+internal struct JxlWeightsSeparable5
 {
-    public InlineArray12<float> Horizontal { get; set; }
+    // Don't make these a property so we can ref into them.
 
-    public InlineArray12<float> Vertical { get; set; }
+    public InlineArray12<float> Horizontal;
+
+    public InlineArray12<float> Vertical;
 }
