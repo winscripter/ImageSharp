@@ -103,11 +103,11 @@ internal sealed class JxlAcStrategyImage : IDisposable
         return this.SetNoBoundsChecks(x, y, type, check: false);
     }
 
-    public void FillDct8(in Rectangle rect) => this.FillPlane(((int)JxlAcStrategyType.DCT << 1) | 1, this.layers, in rect);
+    public void FillDct8(in Rectangle rect) => JxlImageOperations.FillPlane((byte)(((int)JxlAcStrategyType.DCT << 1) | 1), this.layers ?? throw new InvalidOperationException("Image is missing"), rect);
 
     public void FillDct8() => this.FillDct8(this.layers!.GetRectangle());
 
-    public void FillInvalid() => this.FillImage(Invalid, this.layers);
+    public void FillInvalid() => JxlImageOperations.FillImage(Invalid, this.layers ?? throw new InvalidOperationException("Image is missing"));
 
     public void Dispose()
     {

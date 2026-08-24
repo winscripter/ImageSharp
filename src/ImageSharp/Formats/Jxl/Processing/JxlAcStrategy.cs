@@ -81,9 +81,9 @@ internal struct JxlAcStrategy
 
     public readonly JxlAcStrategyType Strategy { get; }
 
-    public void ComputeNaturalCoefficientOrder(ref int order) => CoefficientOrderAndLookup(this, false, ref order);
+    public readonly void ComputeNaturalCoefficientOrder(Span<int> order) => CoefficientOrderAndLookup(this, false, order);
 
-    public void ComputeNaturalCoefficientOrderLookup(ref int lookup) => CoefficientOrderAndLookup(this, true, ref lookup);
+    public readonly void ComputeNaturalCoefficientOrderLookup(Span<int> lookup) => CoefficientOrderAndLookup(this, true, lookup);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetTypeBit(JxlAcStrategyType type) => 1 << (int)type;
@@ -97,7 +97,7 @@ internal struct JxlAcStrategy
         int cx = strategy.CoveredBlocksX;
         int cy = strategy.CoveredBlocksY;
 
-        CoefficientLayout(ref cx, ref cy);
+        JxlForwardCoefficientOrder.CoefficientLayout(ref cx, ref cy);
 
         int xs = cx / cy;
         int xsm = xs - 1;
