@@ -1753,11 +1753,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
                 this.frameDecoder.InitializeFrame(reader, this.imageBundle!, this.previewFrame);
 
-                if (!reader.AllReadsWithinBounds)
-                {
-                    return this.TryRequestMoreInput() ? 1 : 0;
-                }
-
                 this.AdvanceCodeStream(reader.TotalBitsConsumed / JxlMath.BitsPerByte);
                 this.frameHeader = this.frameDecoder.GetFrameHeader();
 
@@ -2701,13 +2696,13 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
         if (!this.gotSignature)
         {
-            JxlSignatureCheck status = CheckSignature(this.nextInput, this.availableInput);
-            if (status == JxlSignatureCheck.InvalidSignature)
+            JxlSignature signature = DetectSignature(this.nextInput, this.availableInput);
+            if (signature == JxlSignature.Invalid)
             {
                 throw new InvalidOperationException("The signature is invalid.");
             }
 
-            if (status == JxlSignatureCheck.NotEnoughBytes)
+            if (signature == JxlSignature.NotEnoughBytes)
             {
                 if (this.inputClosed)
                 {
@@ -2719,7 +2714,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
             this.gotSignature = true;
 
-            if (status == JxlSignatureCheck.Container)
+            if (signature == JxlSignature.Container)
             {
                 this.haveContainer = true;
             }
@@ -2749,6 +2744,8 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
             }
         }
     }
+
+    private static void ThrowNotEnoughData() => throw new InvalidOperationException("Not enough data");
 
     protected override Image<TPixel> Decode<TPixel>(BufferedReadStream stream, CancellationToken cancellationToken) => throw new NotImplementedException();
 

@@ -8,56 +8,61 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 /// <summary>
 /// Represents a bitstream reader.
 /// </summary>
-internal ref struct JxlBitReader(ReadOnlySpan<byte> bytes)
+internal sealed class JxlBitReader(Stream stream)
 {
-    private readonly ReadOnlySpan<byte> data = bytes;
-
     private ulong buffer;
     private uint bufferRemainingBits;
     private int pointer;
 
     /// <summary>
-    /// Gets a value indicating whether this marks an end of stream.
-    /// </summary>
-    public bool IsEndOfStream { get; private set; }
-
-    /// <summary>
     /// Gets the total number of bits consumed.
     /// </summary>
-    public readonly long TotalBitsConsumed => ((long)this.pointer * 8) + (64 - this.bufferRemainingBits);
+    public long TotalBitsConsumed => ((long)this.pointer * 8) + (64 - this.bufferRemainingBits);
 
     /// <summary>
     /// Fetches a new buffer.
     /// </summary>
     private void RefillCore()
     {
-        int remaining = this.data.Length - this.pointer;
-        if (remaining <= 0)
+        Span<byte> temp = stackalloc byte[8];
+        int bytesRead = stream.Read(temp);
+        if (bytesRead == 8)
         {
-            // we don't have any more data... mark an end of stream
-            this.buffer = 0;
-            this.bufferRemainingBits = 0;
-            this.IsEndOfStream = true;
-            return;
-        }
-
-        if (remaining >= 8)
-        {
-            this.buffer = BinaryPrimitives.ReadUInt64LittleEndian(this.data[this.pointer..]);
+            this.buffer = BinaryPrimitives.ReadUInt64LittleEndian(temp);
             this.bufferRemainingBits = 64u;
             this.pointer += 8;
         }
         else
         {
-            ulong value = 0;
-            for (int i = 0; i < remaining; i++)
+            if (bytesRead == 0)
             {
-                value |= (ulong)this.data[this.pointer + i] << (8 * i);
+                throw new EndOfStreamException();
+            }
+
+            ulong value = 0;
+            for (int i = 0; i < bytesRead; i++)
+            {
+                value |= (ulong)temp[i] << (8 * i);
             }
 
             this.buffer = value;
-            this.bufferRemainingBits = (uint)(remaining * 8);
-            this.pointer += remaining;
+            this.bufferRemainingBits = (uint)(bytesRead * 8);
+            this.pointer += bytesRead;
+        }
+    }
+
+    public void JumpToByteBoundary()
+    {
+        uint remainder = (uint)(this.TotalBitsConsumed % 8);
+
+        if (remainder == 0)
+        {
+            return;
+        }
+
+        if (this.ReadBits32(8u - remainder) != 0)
+        {
+            throw new InvalidDataException("Non-zero padding bits");
         }
     }
 
@@ -73,11 +78,6 @@ internal ref struct JxlBitReader(ReadOnlySpan<byte> bytes)
     {
         DebugGuard.MustBeLessThanOrEqualTo(n, 64u, nameof(n));
         this.MaybeRefill();
-
-        if (this.IsEndOfStream)
-        {
-            JxlThrowHelper.ThrowEndOfStream();
-        }
 
         if (n <= this.bufferRemainingBits)
         {
@@ -118,11 +118,6 @@ internal ref struct JxlBitReader(ReadOnlySpan<byte> bytes)
     {
         DebugGuard.MustBeLessThanOrEqualTo(n, 32u, nameof(n));
         this.MaybeRefill();
-
-        if (this.IsEndOfStream)
-        {
-            JxlThrowHelper.ThrowEndOfStream();
-        }
 
         if (n <= this.bufferRemainingBits)
         {

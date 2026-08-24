@@ -116,18 +116,6 @@ internal sealed class JxlReadVisitor(JxlBitReader reader) : JxlVisitorBase
             reader.SkipBits64((uint)remainingBits);
         }
 
-        return this.ThrowIfEndOfStreamOrReturnTrue();
-    }
-
-    private bool ThrowIfEndOfStreamOrReturnTrue()
-    {
-        if (reader.IsEndOfStream)
-        {
-            DebugGuard.IsTrue(false, "Got an invalid end-of-stream");
-            this.notEnoughBytes = true;
-            return true;
-        }
-
         return true;
     }
 }
