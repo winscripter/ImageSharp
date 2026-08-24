@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 using SixLabors.ImageSharp.Formats.Jxl.Memory;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
@@ -69,21 +70,6 @@ internal sealed class JxlQuantizer
     private int quantDc;
 
     /// <summary>
-    /// Inverse global scale
-    /// </summary>
-    private float inverseGlobalScale;
-
-    /// <summary>
-    /// Reciprocal of inverseGlobalScale
-    /// </summary>
-    private float globalScaleSingle;
-
-    /// <summary>
-    /// Inverse quantizer DC
-    /// </summary>
-    private float inverseQuantDc;
-
-    /// <summary>
     /// The zero bias.
     /// </summary>
     private readonly InlineArray3<float> zeroBias;
@@ -116,7 +102,7 @@ internal sealed class JxlQuantizer
         this.globalScale = globalScale;
 
         this.RecomputeFromGlobalScale();
-        this.inverseQuantDc = this.inverseGlobalScale / this.quantDc;
+        this.InverseQuantDc = this.InverseGlobalScale / this.quantDc;
 
         ZeroBiasDefault.CopyTo(this.zeroBias);
     }
@@ -124,17 +110,17 @@ internal sealed class JxlQuantizer
     /// <summary>
     /// Gets the scaling factor.
     /// </summary>
-    public float Scale => this.globalScaleSingle;
+    public float Scale { get; private set; }
 
     /// <summary>
     /// Gets the inverse scaling factor. It is a reciprocal of <see cref="Scale"/>.
     /// </summary>
-    public float InverseGlobalScale => this.inverseGlobalScale;
+    public float InverseGlobalScale { get; private set; }
 
     /// <summary>
     /// Gets the inverse DC quantization base value.
     /// </summary>
-    public float InverseQuantDc => this.inverseQuantDc;
+    public float InverseQuantDc { get; private set; }
 
     public ReadOnlySpan<float> MulDc => this.mulDc;
 
@@ -195,9 +181,9 @@ internal sealed class JxlQuantizer
     /// </summary>
     public void RecomputeFromGlobalScale()
     {
-        this.globalScaleSingle = this.globalScale * (1.0f / GlobalScaleDenominator);
-        this.inverseGlobalScale = 1.0f * GlobalScaleDenominator / this.globalScale;
-        this.inverseQuantDc = this.inverseGlobalScale / this.quantDc;
+        this.Scale = this.globalScale * (1.0f / GlobalScaleDenominator);
+        this.InverseGlobalScale = 1.0f * GlobalScaleDenominator / this.globalScale;
+        this.InverseQuantDc = this.InverseGlobalScale / this.quantDc;
 
         for (int c = 0; c < 3; c++)
         {
@@ -229,14 +215,14 @@ internal sealed class JxlQuantizer
     /// </summary>
     /// <param name="c">The quantization index</param>
     /// <returns>The DC quantization step</returns>
-    public float GetDcStep(int c) => this.inverseQuantDc * this.dequant.DcQuant(c);
+    public float GetDcStep(int c) => this.InverseQuantDc * this.dequant.DcQuant(c);
 
     /// <summary>
     /// Returns the inverse DC quantization step.
     /// </summary>
     /// <param name="c">The quantization index</param>
     /// <returns>The inverse DC quantization step</returns>
-    public float GetInverseDcStep(int c) => this.dequant.InverseDcQuant(c) * (this.globalScaleSingle * this.quantDc);
+    public float GetInverseDcStep(int c) => this.dequant.InverseDcQuant(c) * (this.Scale * this.quantDc);
 
     /// <summary>
     /// Creates JXL quantizer parameters with values reflecting those in this quantizer instance.
@@ -302,7 +288,7 @@ internal sealed class JxlQuantizer
 
         this.RecomputeFromGlobalScale();
 
-        float valueF = (quantDc * this.inverseGlobalScale) + 0.5f;
+        float valueF = (quantDc * this.InverseGlobalScale) + 0.5f;
         float clipValueF = MathF.Min(1 << 16, valueF);
         int newQuant = (int)clipValueF;
         this.quantDc = newQuant;
@@ -322,7 +308,7 @@ internal sealed class JxlQuantizer
 
             for (int x = 0; x < rect.Width; x++)
             {
-                int val = Clamp((rowQf[x] * this.inverseGlobalScale) + 0.5f);
+                int val = Clamp((rowQf[x] * this.InverseGlobalScale) + 0.5f);
 
                 rowQi[x] = val;
             }
@@ -387,7 +373,7 @@ internal sealed class JxlQuantizer
     {
         this.ComputeGlobalScaleAndQuant(quantDc, quantAc, 0);
 
-        int value = Clamp((quantAc * this.inverseGlobalScale) + 0.5f);
+        int value = Clamp((quantAc * this.InverseGlobalScale) + 0.5f);
         rawQuantField.Fill(value);
     }
 }

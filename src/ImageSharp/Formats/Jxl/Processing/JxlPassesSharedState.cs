@@ -1,6 +1,8 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+#pragma warning disable SA1401 // Fields should be private
+
 using SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;
 using SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
@@ -9,6 +11,9 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 internal class JxlPassesSharedState
 {
+    // Make this a field so we can get a ref to it
+    public JxlBlockContextMap BlockContextMap;
+
     public JxlCodecMetadata CodecMetadata { get; set; } = new();
 
     public JxlFrameDimensions FrameDimensions { get; set; }
@@ -36,8 +41,6 @@ internal class JxlPassesSharedState
     public JxlImage3F DcStorage { get; set; }
 
     public JxlImage3F Dc { get; set; }
-
-    public JxlBlockContextMap BlockContextMap { get; set; } = new();
 
     public JxlImage3F[] DcFrames { get; set; } = new JxlImage3F[4];
 

@@ -105,7 +105,7 @@ internal sealed class JxlAcStrategyImage : IDisposable
 
     public void FillDct8(in Rectangle rect) => this.FillPlane(((int)JxlAcStrategyType.DCT << 1) | 1, this.layers, in rect);
 
-    public void FillDct8() => this.FillDct8(in this.layers.GetRectangle());
+    public void FillDct8() => this.FillDct8(this.layers!.GetRectangle());
 
     public void FillInvalid() => this.FillImage(Invalid, this.layers);
 
