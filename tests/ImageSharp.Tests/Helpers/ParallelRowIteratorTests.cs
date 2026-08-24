@@ -7,7 +7,6 @@ using Castle.Core.Configuration;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Memory;
 using SixLabors.ImageSharp.PixelFormats;
-using Xunit.Abstractions;
 
 namespace SixLabors.ImageSharp.Tests.Helpers;
 
@@ -101,7 +100,7 @@ public class ParallelRowIteratorTests
 
         Rectangle rectangle = new(0, minY, 10, maxY - minY);
 
-        int[] expectedData = Enumerable.Repeat(0, minY).Concat(Enumerable.Range(minY, maxY - minY)).ToArray();
+        int[] expectedData = [.. Enumerable.Repeat(0, minY), .. Enumerable.Range(minY, maxY - minY)];
         int[] actualData = new int[maxY];
 
         void RowAction(RowInterval rows)
@@ -180,7 +179,7 @@ public class ParallelRowIteratorTests
 
         Rectangle rectangle = new(0, minY, 10, maxY - minY);
 
-        int[] expectedData = Enumerable.Repeat(0, minY).Concat(Enumerable.Range(minY, maxY - minY)).ToArray();
+        int[] expectedData = [.. Enumerable.Repeat(0, minY), .. Enumerable.Range(minY, maxY - minY)];
         int[] actualData = new int[maxY];
 
         void RowAction(RowInterval rows, Span<Vector4> buffer)

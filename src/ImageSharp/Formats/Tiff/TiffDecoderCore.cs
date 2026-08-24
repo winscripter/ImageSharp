@@ -1,4 +1,4 @@
-// Copyright (c) Six Labors.
+﻿// Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 #nullable disable
 
@@ -440,8 +440,8 @@ internal class TiffDecoderCore : ImageDecoderCore
         int width,
         int height,
         int rowsPerStrip,
-        Span<ulong> stripOffsets,
-        Span<ulong> stripByteCounts,
+        ReadOnlySpan<ulong> stripOffsets,
+        ReadOnlySpan<ulong> stripByteCounts,
         CancellationToken cancellationToken)
         where TPixel : unmanaged, IPixel<TPixel>
     {
@@ -518,8 +518,8 @@ internal class TiffDecoderCore : ImageDecoderCore
         int width,
         int height,
         int rowsPerStrip,
-        Span<ulong> stripOffsets,
-        Span<ulong> stripByteCounts,
+        ReadOnlySpan<ulong> stripOffsets,
+        ReadOnlySpan<ulong> stripByteCounts,
         CancellationToken cancellationToken)
        where TPixel : unmanaged, IPixel<TPixel>
     {
@@ -670,8 +670,8 @@ internal class TiffDecoderCore : ImageDecoderCore
         int tileLength,
         int tilesAcross,
         int tilesDown,
-        Span<ulong> tileOffsets,
-        Span<ulong> tileByteCounts,
+        ReadOnlySpan<ulong> tileOffsets,
+        ReadOnlySpan<ulong> tileByteCounts,
         CancellationToken cancellationToken)
         where TPixel : unmanaged, IPixel<TPixel>
     {
@@ -693,7 +693,7 @@ internal class TiffDecoderCore : ImageDecoderCore
                 tilesBuffers[i] = this.memoryAllocator.Allocate<byte>(uncompressedTilesSize, AllocationOptions.Clean);
             }
 
-            using TiffBaseDecompressor decompressor = this.CreateDecompressor<TPixel>(frame.Width, bitsPerPixel, frame.Metadata);
+            using TiffBaseDecompressor decompressor = this.CreateDecompressor<TPixel>(frame.Width, bitsPerPixel, frame.Metadata, true, tileWidth, tileLength);
             TiffBasePlanarColorDecoder<TPixel> colorDecoder = this.CreatePlanarColorDecoder<TPixel>(frame.Metadata);
 
             int tileIndex = 0;
@@ -780,8 +780,8 @@ internal class TiffDecoderCore : ImageDecoderCore
         int tileLength,
         int tilesAcross,
         int tilesDown,
-        Span<ulong> tileOffsets,
-        Span<ulong> tileByteCounts,
+        ReadOnlySpan<ulong> tileOffsets,
+        ReadOnlySpan<ulong> tileByteCounts,
         CancellationToken cancellationToken)
         where TPixel : unmanaged, IPixel<TPixel>
     {

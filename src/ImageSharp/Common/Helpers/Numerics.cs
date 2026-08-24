@@ -2,6 +2,7 @@
 // Licensed under the Six Labors Split License.
 
 using System.Numerics;
+using System.Numerics.Tensors;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -329,7 +330,7 @@ internal static class Numerics
     /// <param name="max">The maximum inclusive value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clamp(Span<byte> span, byte min, byte max)
-        => TensorPrimitives_.Clamp(span, min, max, span);
+        => TensorPrimitives.Clamp(span, min, max, span);
 
     /// <summary>
     /// Clamps the span values to the inclusive range of min and max.
@@ -339,7 +340,7 @@ internal static class Numerics
     /// <param name="max">The maximum inclusive value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clamp(Span<uint> span, uint min, uint max)
-        => TensorPrimitives_.Clamp(span, min, max, span);
+        => TensorPrimitives.Clamp(span, min, max, span);
 
     /// <summary>
     /// Clamps the span values to the inclusive range of min and max.
@@ -349,7 +350,7 @@ internal static class Numerics
     /// <param name="max">The maximum inclusive value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clamp(Span<int> span, int min, int max)
-        => TensorPrimitives_.Clamp(span, min, max, span);
+        => TensorPrimitives.Clamp(span, min, max, span);
 
     /// <summary>
     /// Clamps the span values to the inclusive range of min and max.
@@ -359,7 +360,7 @@ internal static class Numerics
     /// <param name="max">The maximum inclusive value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clamp(Span<float> span, float min, float max)
-        => TensorPrimitives_.Clamp(span, min, max, span);
+        => TensorPrimitives.Clamp(span, min, max, span);
 
     /// <summary>
     /// Clamps the span values to the inclusive range of min and max.
@@ -369,7 +370,7 @@ internal static class Numerics
     /// <param name="max">The maximum inclusive value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clamp(Span<double> span, double min, double max)
-        => TensorPrimitives_.Clamp(span, min, max, span);
+        => TensorPrimitives.Clamp(span, min, max, span);
 
     /// <summary>
     /// Pre-multiplies the "x", "y", "z" components of a vector by its "w" component leaving the "w" component intact.
@@ -939,19 +940,9 @@ internal static class Numerics
     /// <typeparam name="TVector">The type of the vector.</typeparam>
     /// <param name="span">The given span.</param>
     /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint VectorCount<TVector>(this Span<byte> span)
+    public static nuint VectorCount<TVector>(this ReadOnlySpan<byte> span)
         where TVector : struct
         => (uint)span.Length / (uint)Vector<TVector>.Count;
-
-    /// <summary>
-    /// Gets the count of vectors that safely fit into the given span.
-    /// </summary>
-    /// <typeparam name="TVector">The type of the vector.</typeparam>
-    /// <param name="span">The given span.</param>
-    /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint Vector128Count<TVector>(this Span<byte> span)
-        where TVector : struct
-        => (uint)span.Length / (uint)Vector128<TVector>.Count;
 
     /// <summary>
     /// Gets the count of vectors that safely fit into the given span.
@@ -969,29 +960,9 @@ internal static class Numerics
     /// <typeparam name="TVector">The type of the vector.</typeparam>
     /// <param name="span">The given span.</param>
     /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint Vector256Count<TVector>(this Span<byte> span)
-        where TVector : struct
-        => (uint)span.Length / (uint)Vector256<TVector>.Count;
-
-    /// <summary>
-    /// Gets the count of vectors that safely fit into the given span.
-    /// </summary>
-    /// <typeparam name="TVector">The type of the vector.</typeparam>
-    /// <param name="span">The given span.</param>
-    /// <returns>Count of vectors that safely fit into the span.</returns>
     public static nuint Vector256Count<TVector>(this ReadOnlySpan<byte> span)
         where TVector : struct
         => (uint)span.Length / (uint)Vector256<TVector>.Count;
-
-    /// <summary>
-    /// Gets the count of vectors that safely fit into the given span.
-    /// </summary>
-    /// <typeparam name="TVector">The type of the vector.</typeparam>
-    /// <param name="span">The given span.</param>
-    /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint Vector512Count<TVector>(this Span<byte> span)
-        where TVector : struct
-        => (uint)span.Length / (uint)Vector512<TVector>.Count;
 
     /// <summary>
     /// Gets the count of vectors that safely fit into the given span.
@@ -1009,7 +980,7 @@ internal static class Numerics
     /// <typeparam name="TVector">The type of the vector.</typeparam>
     /// <param name="span">The given span.</param>
     /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint VectorCount<TVector>(this Span<float> span)
+    public static nuint VectorCount<TVector>(this ReadOnlySpan<float> span)
         where TVector : struct
         => (uint)span.Length / (uint)Vector<TVector>.Count;
 
@@ -1019,7 +990,7 @@ internal static class Numerics
     /// <typeparam name="TVector">The type of the vector.</typeparam>
     /// <param name="span">The given span.</param>
     /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint Vector128Count<TVector>(this Span<float> span)
+    public static nuint Vector128Count<TVector>(this ReadOnlySpan<float> span)
         where TVector : struct
         => (uint)span.Length / (uint)Vector128<TVector>.Count;
 
@@ -1029,7 +1000,7 @@ internal static class Numerics
     /// <typeparam name="TVector">The type of the vector.</typeparam>
     /// <param name="span">The given span.</param>
     /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint Vector256Count<TVector>(this Span<float> span)
+    public static nuint Vector256Count<TVector>(this ReadOnlySpan<float> span)
         where TVector : struct
         => (uint)span.Length / (uint)Vector256<TVector>.Count;
 
@@ -1049,7 +1020,7 @@ internal static class Numerics
     /// <typeparam name="TVector">The type of the vector.</typeparam>
     /// <param name="span">The given span.</param>
     /// <returns>Count of vectors that safely fit into the span.</returns>
-    public static nuint Vector512Count<TVector>(this Span<float> span)
+    public static nuint Vector512Count<TVector>(this ReadOnlySpan<float> span)
         where TVector : struct
         => (uint)span.Length / (uint)Vector512<TVector>.Count;
 
@@ -1062,13 +1033,4 @@ internal static class Numerics
     public static nuint Vector512Count<TVector>(int length)
         where TVector : struct
         => (uint)length / (uint)Vector512<TVector>.Count;
-
-    /// <summary>
-    /// Normalizes the values in a given <see cref="Span{T}"/>.
-    /// </summary>
-    /// <param name="span">The sequence of <see cref="float"/> values to normalize.</param>
-    /// <param name="sum">The sum of the values in <paramref name="span"/>.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Normalize(Span<float> span, float sum)
-        => TensorPrimitives_.Divide(span, sum, span);
 }

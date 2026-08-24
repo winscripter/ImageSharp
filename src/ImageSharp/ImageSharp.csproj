@@ -23,19 +23,19 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!--Bump to v4.0 prior to tagged release.-->
-    <MinVerMinimumMajorMinor>4.0</MinVerMinimumMajorMinor>
+    <!--Bump to v5.0 prior to tagged release.-->
+    <MinVerMinimumMajorMinor>5.0</MinVerMinimumMajorMinor>
   </PropertyGroup>
 
   <Choose>
     <When Condition="$(SIXLABORS_TESTING_PREVIEW) == true">
       <PropertyGroup>
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFrameworks>net8.0</TargetFrameworks>
+        <TargetFrameworks>net10.0</TargetFrameworks>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -47,7 +47,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
+    <PackageReference Include="System.IO.Hashing" Version="10.0.11" />
+    <PackageReference Include="System.Numerics.Tensors" Version="10.0.11" />
   </ItemGroup>
 
   <ItemGroup>

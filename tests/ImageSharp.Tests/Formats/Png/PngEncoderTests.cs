@@ -200,14 +200,14 @@ public partial class PngEncoderTests
             return;
         }
 
-        foreach (object[] filterMethod in PngFilterMethods)
+        foreach (TheoryDataRow<PngFilterMethod> filterMethod in PngFilterMethods)
         {
             foreach (PngInterlaceMode interlaceMode in InterlaceMode)
             {
                 TestPngEncoderCore(
                     provider,
                     pngColorType,
-                    (PngFilterMethod)filterMethod[0],
+                    filterMethod.Data,
                     pngBitDepth,
                     interlaceMode,
                     appendPngColorType: true,
@@ -236,14 +236,14 @@ public partial class PngEncoderTests
     public void WorksWithAllBitDepthsAndExcludeAllFilter<TPixel>(TestImageProvider<TPixel> provider, PngColorType pngColorType, PngBitDepth pngBitDepth)
       where TPixel : unmanaged, IPixel<TPixel>
     {
-        foreach (object[] filterMethod in PngFilterMethods)
+        foreach (TheoryDataRow<PngFilterMethod> filterMethod in PngFilterMethods)
         {
             foreach (PngInterlaceMode interlaceMode in InterlaceMode)
             {
                 TestPngEncoderCore(
                 provider,
                 pngColorType,
-                (PngFilterMethod)filterMethod[0],
+                filterMethod.Data,
                 pngBitDepth,
                 interlaceMode,
                 appendPngColorType: true,
@@ -287,7 +287,7 @@ public partial class PngEncoderTests
         using MemoryStream ms = new();
         image.Save(ms, PngEncoder);
 
-        byte[] data = ms.ToArray().Take(8).ToArray();
+        byte[] data = [.. ms.ToArray().Take(8)];
         byte[] expected =
         [
             0x89, // Set the high bit.

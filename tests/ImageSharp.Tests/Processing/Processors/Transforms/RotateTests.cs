@@ -12,20 +12,16 @@ namespace SixLabors.ImageSharp.Tests.Processing.Processors.Transforms;
 [GroupOutput("Transforms")]
 public class RotateTests
 {
-    public static readonly TheoryData<float> RotateAngles
-        = new()
-        {
-            50, -50, 170, -170
-        };
+    public static readonly TheoryData<float> RotateAngles = [50f, -50f, 170f, -170f];
 
     public static readonly TheoryData<RotateMode> RotateEnumValues
-        = new()
-        {
+        =
+        [
             RotateMode.None,
             RotateMode.Rotate90,
             RotateMode.Rotate180,
             RotateMode.Rotate270
-        };
+        ];
 
     [Theory]
     [WithTestPatternImages(nameof(RotateAngles), 100, 50, PixelTypes.Rgba32)]
@@ -48,7 +44,7 @@ public class RotateTests
     {
         using Image<TPixel> image = provider.GetImage();
 
-        image.Metadata.ExifProfile = new();
+        image.Metadata.ExifProfile = new ExifProfile();
         image.Metadata.ExifProfile.SetValue(ExifTag.SubjectLocation, [5, 15]);
         image.Metadata.ExifProfile.SetValue(ExifTag.SubjectArea, [5, 15, 50, 50]);
 

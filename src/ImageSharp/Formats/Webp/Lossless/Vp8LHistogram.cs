@@ -2,6 +2,7 @@
 // Licensed under the Six Labors Split License.
 
 using System.Buffers;
+using System.Numerics.Tensors;
 using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp.Common.Helpers;
 using SixLabors.ImageSharp.Memory;
@@ -331,7 +332,7 @@ internal abstract unsafe class Vp8LHistogram
         {
             if (b.IsUsed(0))
             {
-                TensorPrimitives_.Add(this.Literal[..literalSize], b.Literal[..literalSize], output.Literal[..literalSize]);
+                TensorPrimitives.Add(this.Literal[..literalSize], b.Literal[..literalSize], output.Literal[..literalSize]);
             }
             else
             {
@@ -354,7 +355,7 @@ internal abstract unsafe class Vp8LHistogram
         {
             if (b.IsUsed(1))
             {
-                TensorPrimitives_.Add(this.Red[..size], b.Red[..size], output.Red[..size]);
+                TensorPrimitives.Add(this.Red[..size], b.Red[..size], output.Red[..size]);
             }
             else
             {
@@ -377,7 +378,7 @@ internal abstract unsafe class Vp8LHistogram
         {
             if (b.IsUsed(2))
             {
-                TensorPrimitives_.Add(this.Blue[..size], b.Blue[..size], output.Blue[..size]);
+                TensorPrimitives.Add(this.Blue[..size], b.Blue[..size], output.Blue[..size]);
             }
             else
             {
@@ -400,7 +401,7 @@ internal abstract unsafe class Vp8LHistogram
         {
             if (b.IsUsed(3))
             {
-                TensorPrimitives_.Add(this.Alpha[..size], b.Alpha[..size], output.Alpha[..size]);
+                TensorPrimitives.Add(this.Alpha[..size], b.Alpha[..size], output.Alpha[..size]);
             }
             else
             {
@@ -423,7 +424,7 @@ internal abstract unsafe class Vp8LHistogram
         {
             if (b.IsUsed(4))
             {
-                TensorPrimitives_.Add(this.Distance[..size], b.Distance[..size], output.Distance[..size]);
+                TensorPrimitives.Add(this.Distance[..size], b.Distance[..size], output.Distance[..size]);
             }
             else
             {
@@ -441,8 +442,8 @@ internal abstract unsafe class Vp8LHistogram
     }
 
     private static double GetCombinedEntropy(
-        Span<uint> x,
-        Span<uint> y,
+        ReadOnlySpan<uint> x,
+        ReadOnlySpan<uint> y,
         int length,
         bool isXUsed,
         bool isYUsed,
@@ -494,7 +495,7 @@ internal abstract unsafe class Vp8LHistogram
         return bitEntropy.BitsEntropyRefine() + stats.FinalHuffmanCost();
     }
 
-    private static double ExtraCostCombined(Span<uint> x, Span<uint> y, int length)
+    private static double ExtraCostCombined(ReadOnlySpan<uint> x, ReadOnlySpan<uint> y, int length)
     {
         double cost = 0.0d;
         for (int i = 2; i < length - 2; i++)
@@ -509,7 +510,7 @@ internal abstract unsafe class Vp8LHistogram
     /// <summary>
     /// Get the symbol entropy for the distribution 'population'.
     /// </summary>
-    private double PopulationCost(Span<uint> population, int length, ref uint trivialSym, int isUsedIndex, Vp8LStreaks stats, Vp8LBitEntropy bitEntropy)
+    private double PopulationCost(ReadOnlySpan<uint> population, int length, ref uint trivialSym, int isUsedIndex, Vp8LStreaks stats, Vp8LBitEntropy bitEntropy)
     {
         bitEntropy.Init();
         stats.Clear();
@@ -523,7 +524,7 @@ internal abstract unsafe class Vp8LHistogram
         return bitEntropy.BitsEntropyRefine() + stats.FinalHuffmanCost();
     }
 
-    private static double ExtraCost(Span<uint> population, int length)
+    private static double ExtraCost(ReadOnlySpan<uint> population, int length)
     {
         double cost = 0.0d;
         for (int i = 2; i < length - 2; i++)
