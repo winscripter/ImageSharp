@@ -2314,11 +2314,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
                 if (this.boxType == JxlBoxTypes.Brob)
                 {
-                    if (this.availableInput < headerSize + 4)
-                    {
-                        return NeedMoreInput;
-                    }
-
                     this.boxDecodedType = BitConverter.ToInt32(this.nextInput!.Memory.Span[(int)headerSize..]);
                 }
                 else
@@ -2423,11 +2418,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                     throw new InvalidOperationException("The file type box is too small");
                 }
 
-                if (this.availableInput < 8)
-                {
-                    return NeedMoreInput;
-                }
-
                 if (BinaryUtils.ReadInt32BigEndian(stream) != 0x6A786C20) // Bytes "jxl " in Big Endian
                 {
                     throw new InvalidOperationException("File type box major brand must be \"jxl \"");
@@ -2447,11 +2437,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                 if (this.lastCodestreamSeen)
                 {
                     throw new InvalidOperationException("Cannot have jxlp box after last jxlp box");
-                }
-
-                if (this.availableInput < 4)
-                {
-                    return NeedMoreInput;
                 }
 
                 if (!this.boxContentsUnbounded && this.boxContentsSize < 4)
