@@ -1525,10 +1525,9 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// <summary>
     /// Reads all basic metadata and headers.
     /// </summary>
-    /// <returns>Status of the parsing.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the data is incorrect.</exception>
     /// <exception cref="InvalidDataException">Thrown if the data is malformed.</exception>
-    public bool ReadBasicInfo(Stream stream)
+    public void ReadBasicInfo(Stream stream)
     {
         if (!this.gotCodestreamSignature)
         {
@@ -1568,16 +1567,13 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         {
             throw new InvalidOperationException("The image is too large");
         }
-
-        return true;
     }
 
     /// <summary>
     /// Parses all necessary headers.
     /// </summary>
-    /// <returns>Status of the parsing.</returns>
     /// <exception cref="InvalidOperationException">Thrown if data is incorrect.</exception>
-    public bool ReadAllHeaders()
+    public void ReadAllHeaders()
     {
         if (!this.gotTransformData)
         {
@@ -1635,8 +1631,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         }
 
         this.imageMetadata = this.metadata.ImageMetadata;
-
-        return true;
     }
 
     /// <summary>
@@ -1651,8 +1645,8 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         var toc = this.frameDecoder!.Toc;
 
         long pos = 0;
-        List<JxlFrameDecoder.SectionInfo> sectionInfo = [];
-        List<JxlFrameDecoder.SectionStatus> sectionStatus = [];
+        List<JxlSectionInfo> sectionInfo = [];
+        List<JxlSectionStatus> sectionStatus = [];
 
         for (long i = this.nextSection; i < toc.Size; i++)
         {
@@ -1671,7 +1665,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
             }
 
             JxlBitReader br = new(span.Slice((int)pos, (int)size));
-            sectionInfo.Add(new(br, id, i));
+            sectionInfo.Add(new(br, (int)id, (int)i));
             sectionStatus.Add(default);
             pos += size;
         }
@@ -1680,7 +1674,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
         bool outOfBounds = false;
 
-        foreach (JxlFrameDecoder.SectionInfo info in sectionInfo)
+        foreach (JxlSectionInfo info in sectionInfo)
         {
             if (!info.BitReader.AllReadsWithinBounds)
             {
@@ -1696,13 +1690,13 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
         for (int i = 0; i < sectionStatus.Count; i++)
         {
-            JxlFrameDecoder.SectionStatus ss = sectionStatus[i];
+            JxlSectionStatus ss = sectionStatus[i];
 
-            if (ss == JxlFrameDecoder.Done)
+            if (ss == JxlSectionStatus.Done)
             {
                 this.sectionProcessed[sectionInfo[i].Index] = 1;
             }
-            else if (ss != JxlFrameDecoder.Skipped)
+            else if (ss != JxlSectionStatus.Skipped)
             {
                 throw new InvalidOperationException("Unexpected section status");
             }
@@ -1729,12 +1723,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     {
         if (!this.gotBasicInfo)
         {
-            bool status = this.ReadBasicInfo();
-
-            if (!status)
-            {
-                throw new InvalidOperationException("Could not parse basic info");
-            }
+            this.ReadBasicInfo();
         }
 
         if ((this.eventsWanted & BasicInfo) != 0)
@@ -1751,12 +1740,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
         if (!this.gotAllHeaders)
         {
-            bool status = this.ReadAllHeaders();
-
-            if (!status)
-            {
-                throw new InvalidOperationException("Could not parse headers");
-            }
+            this.ReadAllHeaders();
         }
 
         if ((this.eventsWanted & ColorEncoding) != 0)
@@ -1781,12 +1765,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         while (true)
         {
             bool parseFrames = (this.eventsWanted & (PreviewImage | DecodedFrame | FullImage)) != 0;
-            if (!parseFrames)
-            {
-                break;
-            }
-
-            if (this.frameStage == JxlFrameStage.Header && this.isLastTotal)
+            if (!parseFrames || (this.frameStage == JxlFrameStage.Header && this.isLastTotal))
             {
                 break;
             }
@@ -1934,8 +1913,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                     this.frameDecoder.SetRenderSpotcolors(this.renderSpotcolors);
                     this.frameDecoder.SetCoalescing(this.coalescing);
 
-                    if (!this.previewFrame &&
-                        (this.eventsWanted & FrameProgression) != 0)
+                    if (!this.previewFrame && (this.eventsWanted & FrameProgression) != 0)
                     {
                         this.frameProgressiveDetail = this.frameDecoder.SetPauseAtProgressive(this.progressiveDetail);
                     }
@@ -2312,20 +2290,12 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
                 if (this.reconstructionExifSize > 0)
                 {
-                    int status = JxlToJpegDecoder.SetExif(this.exifMetadata!.Memory, jpegData);
-                    if (status != Success)
-                    {
-                        return status;
-                    }
+                    JxlToJpegDecoder.SetExif(this.exifMetadata!.Memory, jpegData);
                 }
 
                 if (this.reconstructionXmpSize > 0)
                 {
-                    int status = JxlToJpegDecoder.SetXmp(this.xmpMetadata!.Memory, jpegData);
-                    if (status != Success)
-                    {
-                        return status;
-                    }
+                    JxlToJpegDecoder.SetXmp(this.xmpMetadata!.Memory, jpegData);
                 }
 
                 this.reconstructionOutputJpeg = JpegReconstructionStage.Output;
@@ -2333,11 +2303,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
             if (this.reconstructionOutputJpeg == JpegReconstructionStage.Output && !this.JbrdNeedsMoreBoxes())
             {
-                int status = this.jpegDecoder!.WriteOutput(this.imageBundle!.JpegData);
-                if (status != Success)
-                {
-                    return status;
-                }
+                this.jpegDecoder!.WriteOutput(this.imageBundle!.JpegData);
 
                 this.reconstructionOutputJpeg = JpegReconstructionStage.None;
                 this.imageBundle.Reset();
@@ -2365,22 +2331,12 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
                 if (this.availableInput == 0)
                 {
-                    if (this.decoderStage != JxlDecoderStage.CodeStreamFinished)
+                    if (this.decoderStage != JxlDecoderStage.CodeStreamFinished || this.JbrdNeedsMoreBoxes())
                     {
                         return NeedMoreInput;
                     }
 
-                    if (this.JbrdNeedsMoreBoxes())
-                    {
-                        return NeedMoreInput;
-                    }
-
-                    if (this.inputClosed)
-                    {
-                        return Success;
-                    }
-
-                    if ((this.eventsWanted & Box) != 0)
+                    if (this.inputClosed || (this.eventsWanted & Box) != 0)
                     {
                         return Success;
                     }
@@ -2610,12 +2566,11 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                     {
                         bool hasMoreData = this.TryInjectNextBufferedJxlpBox();
 
-                        if (hasMoreData)
+                        if (!hasMoreData)
                         {
-                            continue;
+                            this.boxStage = JxlBoxStage.Header;
                         }
 
-                        this.boxStage = JxlBoxStage.Header;
                         continue;
                     }
                 }
@@ -2732,12 +2687,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
             {
                 if (this.boxContentsUnbounded)
                 {
-                    if (this.inputClosed)
-                    {
-                        return Success;
-                    }
-
-                    if (!this.boxOutBufferSet)
+                    if (this.inputClosed || !this.boxOutBufferSet)
                     {
                         return Success;
                     }
