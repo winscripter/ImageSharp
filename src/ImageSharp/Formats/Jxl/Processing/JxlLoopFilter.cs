@@ -22,11 +22,6 @@ internal sealed class JxlLoopFilter : IJxlFields
     private const float InverseSigmaNum = -1.1715728752538099024f;
 
     /// <summary>
-    /// kInvSigmaNum / 0.3
-    /// </summary>
-    private const float MinSigma = -3.90524291751269967465540850526868f;
-
-    /// <summary>
     /// Gets the number of EPF (Edge-preserving filter) sharp entries.
     /// </summary>
     public const int EpfSharpEntries = 8;

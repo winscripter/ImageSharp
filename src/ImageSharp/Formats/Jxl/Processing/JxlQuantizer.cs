@@ -52,12 +52,12 @@ internal sealed class JxlQuantizer
     /// <summary>
     /// Represents the multipliers for the DC coefficients.
     /// </summary>
-    private readonly InlineArray4<float> mulDc;
+    private InlineArray4<float> mulDc;
 
     /// <summary>
     /// Represents the inverse multipliers for the DC coefficients.
     /// </summary>
-    private readonly InlineArray4<float> inverseMulDc;
+    private InlineArray4<float> inverseMulDc;
 
     /// <summary>
     /// Global scale
@@ -148,8 +148,8 @@ internal sealed class JxlQuantizer
     /// </summary>
     public void ClearDcMultipliers()
     {
-        Array.Fill(this.mulDc, 1f);
-        Array.Fill(this.inverseMulDc, 1f);
+        ((Span<float>)this.mulDc).Fill(1f);
+        ((Span<float>)this.inverseMulDc).Fill(1f);
     }
 
     /// <summary>
@@ -303,8 +303,8 @@ internal sealed class JxlQuantizer
     {
         for (int y = 0; y < rect.Height; y++)
         {
-            ReadOnlySpan<float> rowQf = qf.GetRow(in rect, y);
-            Span<int> rowQi = rawQuantField.GetRow(in rect, y);
+            ReadOnlySpan<float> rowQf = qf.GetRow(rect, y);
+            Span<int> rowQi = rawQuantField.GetRow(rect, y);
 
             for (int x = 0; x < rect.Width; x++)
             {
@@ -352,7 +352,7 @@ internal sealed class JxlQuantizer
 
         if (rawQuantField != null)
         {
-            if (rawQuantField.GetSize() != qf.GetSize())
+            if (rawQuantField.GetRectangle() != qf.GetRectangle())
             {
                 data.Dispose();
                 deviations.Dispose();
@@ -360,7 +360,7 @@ internal sealed class JxlQuantizer
                 return false;
             }
 
-            this.SetQuantField(qf, qf.GetRectangle(), rawQuantField);
+            this.SetQuantFieldRect(qf, qf.GetRectangle(), rawQuantField);
         }
 
         data.Dispose();
@@ -374,6 +374,6 @@ internal sealed class JxlQuantizer
         this.ComputeGlobalScaleAndQuant(quantDc, quantAc, 0);
 
         int value = Clamp((quantAc * this.InverseGlobalScale) + 0.5f);
-        rawQuantField.Fill(value);
+        JxlImageOperations.FillImage(value, rawQuantField);
     }
 }
