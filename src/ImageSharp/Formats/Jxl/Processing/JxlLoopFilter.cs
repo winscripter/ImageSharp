@@ -4,6 +4,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
@@ -181,13 +182,13 @@ internal sealed class JxlLoopFilter : IJxlFields
         JxlAcStrategyImage acStrategy = state.Shared.AcStrategy;
         float quantScale = state.Shared.Quantizer.Scale;
 
-        int sigmaStride = state.Sigma.PixelsPerRow;
+        int sigmaStride = state.Sigma!.PixelsPerRow;
         int sharpnessStride = state.Shared.EpfSharpness.PixelsPerRow;
 
         for (int by = 0; by < blockRect.Height; by++)
         {
-            Span<float> sigmaRow = state.Sigma.GetRowSpan(by);
-            Span<byte> sharpnessRow = state.Shared.EpfSharpness.GetRowSpan(by);
+            Span<float> sigmaRow = state.Sigma.GetRow(by);
+            Span<byte> sharpnessRow = state.Shared.EpfSharpness.GetRow(by);
             JxlAcStrategyRow acsRow = acStrategy.GetRow(in blockRect, by);
             Span<int> rowQuant = state.Shared.RawQuantField.GetRow(by);
 
@@ -245,7 +246,7 @@ internal sealed class JxlLoopFilter : IJxlFields
                     }
                 }
 
-                if (by + blockRect.Y + acs.CoveredBlocksX == state.Shared.FrameDimensions.YSizeBloks)
+                if (by + blockRect.Y + acs.CoveredBlocksX == state.Shared.FrameDimensions.YSizeBlocks)
                 {
                     for (int iy = 0; iy < SigmaBorder; iy++)
                     {

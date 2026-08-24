@@ -8,11 +8,6 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Encoder.Ans;
 /// </summary>
 internal sealed class JxlHistogram(int length)
 {
-    /// <summary>
-    /// Rounding constant
-    /// </summary>
-    private const int Rounding = 8;
-
     public List<int> Counts { get; set; } = new(length);
 
     public int TotalCount { get; set; }

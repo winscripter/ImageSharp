@@ -33,9 +33,9 @@ internal static class JxlXybDecoder
         ref Vector<float> linearG,
         ref Vector<float> linearB)
     {
-        Vector<float> negBiasR = new(opsinParameters.OpsinBiaases[0]);
-        Vector<float> negBiasG = new(opsinParameters.OpsinBiaases[1]);
-        Vector<float> negBiasB = new(opsinParameters.OpsinBiaases[2]);
+        Vector<float> negBiasR = new(opsinParameters.OpsinBiases[0]);
+        Vector<float> negBiasG = new(opsinParameters.OpsinBiases[1]);
+        Vector<float> negBiasB = new(opsinParameters.OpsinBiases[2]);
 
         Vector<float> gammaR = opsinX + opsinY;
         Vector<float> gammaG = opsinY - opsinX;
@@ -49,7 +49,7 @@ internal static class JxlXybDecoder
         Vector<float> mixedG = (gammaG2 * gammaG) + negBiasG;
         Vector<float> mixedB = (gammaB2 * gammaB) + negBiasB;
 
-        Span<float> inverseMatrix = opsinParameters.GetInverseOpsinMatrixSpan();
+        Span<float> inverseMatrix = opsinParameters.InverseOpsinMatrix;
 
         linearR = LoadDuplicate128(ref inverseMatrix[0 * 4]) * mixedR;
         linearG = LoadDuplicate128(ref inverseMatrix[3 * 4]) * mixedR;
@@ -66,7 +66,7 @@ internal static class JxlXybDecoder
 
     public static bool OpsinToLinear(JxlImage3F opsin, Rectangle rect, JxlImage3F linear, JxlOpsinParameters opsinParameters)
     {
-        if (!SameSize(rect, linear))
+        if (!JxlImageOperations.SameSize(rect, linear))
         {
             return false;
         }

@@ -21,7 +21,7 @@ internal sealed class JxlModularState
     private readonly int[] error;
     private readonly JxlModularHeader header;
 
-    public JxlModularState(JxlModularHeader header, int width, int height)
+    public JxlModularState(JxlModularHeader header, int width)
     {
         this.header = header;
 
@@ -104,9 +104,9 @@ internal sealed class JxlModularState
 
         int cur_row = yIsOdd ? 0 : (width + 2);
         int prev_row = yIsOdd ? (width + 2) : 0;
-        int pos_N = prev_row + x;
-        int pos_NE = x < width - 1 ? pos_N + 1 : pos_N;
-        int pos_NW = x > 0 ? pos_N - 1 : pos_N;
+        int posN = prev_row + x;
+        int posNE = x < width - 1 ? posN + 1 : posN;
+        int posNW = x > 0 ? posN - 1 : posN;
 
         Span<uint> weights = stackalloc uint[4];
         ref uint headerW = ref this.header.GetWReference();
@@ -114,7 +114,7 @@ internal sealed class JxlModularState
         for (int i = 0; i < 4; i++)
         {
             Span<uint> error = this.predErrors[i].AsSpan();
-            weights[i] = error[pos_N] + error[pos_NE] + error[pos_NW];
+            weights[i] = error[posN] + error[posNE] + error[posNW];
             weights[i] = ErrorWeight((int)weights[i], Unsafe.Add(ref headerW, i));
         }
 
@@ -125,10 +125,10 @@ internal sealed class JxlModularState
         nn = AddBits(nn);
 
         long teW = x == 0 ? 0 : this.error[cur_row + x - 1];
-        long teN = this.error[pos_N];
-        long teNW = this.error[pos_NW];
+        long teN = this.error[posN];
+        long teNW = this.error[posNW];
         long sumWN = teN + teW;
-        long teNE = this.error[pos_NE];
+        long teNE = this.error[posNE];
 
         if (computeProperties)
         {

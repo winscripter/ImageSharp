@@ -23,9 +23,9 @@ internal sealed class JxlDctAcImage<T> : IJxlDctAcImage, IDisposable
 
     public bool IsEmpty => this.image.XSize == 0 || this.image.YSize == 0;
 
-    public void Clear() => JxlImageOperations.ClearImage(this.image);
+    public void Clear() => JxlImageOperations.ZeroFillImage(this.image);
 
-    public void Clear(int plane = 0) => JxlImageOperations.ClearImage(this.image);
+    public void Clear(int plane = 0) => JxlImageOperations.ZeroFillImage(this.image);
 
     public unsafe JxlDctAcPointer GetPlaneRow(int channel, int y, int xBase = 0)
     {

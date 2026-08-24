@@ -1,6 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+using SixLabors.ImageSharp.Formats.Jxl.Cms;
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 using SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
@@ -9,7 +10,7 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 internal sealed class JxlColorCorrelation
 {
     private float baseCorrelationX;
-    private float baseCorrelationB = DefaultYToBRatio;
+    private float baseCorrelationB = JxlOpsinConstants.YToBRatio;
 
     private readonly float[] dcFactors = new float[4];
     private uint colorFactor = JxlChromaFromLuma.DefaultColorFactor;

@@ -50,10 +50,11 @@ internal sealed class JxlQuantizedSpline : IDisposable
     public static JxlQuantizedSpline Create(Configuration configuration, JxlSpline original, int quantizationAdjustment, float yToX, float yToB)
     {
         JxlQuantizedSpline spline = new();
+        Span<PointF> controlPoints = original.ControlPoints.Span;
 
-        spline.ReserveControlPoints(configuration, original.ControlPoints.Count - 1);
+        spline.ReserveControlPoints(configuration, controlPoints.Length - 1);
 
-        PointF startingPoint = original.ControlPoints.First();
+        PointF startingPoint = controlPoints[0];
         int previousX = (int)MathF.Round(startingPoint.X);
         int previousY = (int)MathF.Round(startingPoint.Y);
         int previousDx = 0; // D stands for delta
@@ -65,7 +66,7 @@ internal sealed class JxlQuantizedSpline : IDisposable
 
         for (int i = 0; i < length; i++)
         {
-            PointF controlPoint = original.ControlPoints[i];
+            PointF controlPoint = controlPoints[i];
 
             int newX = (int)MathF.Round(controlPoint.X);
             int newY = (int)MathF.Round(controlPoint.Y);
@@ -93,8 +94,8 @@ internal sealed class JxlQuantizedSpline : IDisposable
             // for i=0 and adding a separate loop for i=1..31
             for (int i = 0; i < 32; i++)
             {
-                float dctFactor = (i == 0) ? Sqrt2 : 1.0f;
-                float inverseDctFactor = (i == 0) ? Sqrt05 : 1.0f;
+                float dctFactor = (i == 0) ? JxlDctScales.Sqrt2 : 1.0f;
+                float inverseDctFactor = (i == 0) ? JxlDctScales.Sqrt05 : 1.0f;
                 float restoredY = spline.ColorDct[1][i] * inverseDctFactor * ChannelWeight[1] * inverseQuant;
                 float decorrelated = spline.ColorDct[c][i] - (factor * restoredY);
                 spline.ColorDct[c][i] = ConvertToInteger(decorrelated * dctFactor * quant / ChannelWeight[c]);
@@ -103,7 +104,7 @@ internal sealed class JxlQuantizedSpline : IDisposable
 
         for (int i = 0; i < 32; i++)
         {
-            float dctFactor = (i == 0) ? Sqrt2 : 1.0f;
+            float dctFactor = (i == 0) ? JxlDctScales.Sqrt2 : 1.0f;
             spline.SigmaDct[i] = ConvertToInteger(original.SigmaDct[i] * dctFactor * quant / ChannelWeight[1]);
         }
 
@@ -190,7 +191,7 @@ internal sealed class JxlQuantizedSpline : IDisposable
         {
             for (int i = 0; i < 32; i++)
             {
-                float inverseDctFactor = (i == 0) ? Sqrt05 : 1.0f;
+                float inverseDctFactor = (i == 0) ? JxlDctScales.Sqrt05 : 1.0f;
                 result.ColorDct[c][i] = this.ColorDct[c][i] * inverseDctFactor * ChannelWeight[c] * inverseQuant;
             }
         }
