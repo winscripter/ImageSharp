@@ -19,6 +19,13 @@ internal static class JxlShared
     public const int MaximumNumberOfReferenceFrames = 4;
 
     /// <summary>
+    /// Reserved by ISO/IEC 10918-1. LF causes files opened in text mode
+    /// to be rejected because the marker changes to 0x0D instead. The
+    /// 0xFF prefix also ensures there were no 7-bit transmission limitations.
+    /// </summary>
+    public const byte CodestreamMarker = 0x0A;
+
+    /// <summary>
     /// Gets the 12-byte signature (a.k.a. magic) for JPEG XL files.
     /// </summary>
     public static ReadOnlySpan<byte> SignatureBox =>

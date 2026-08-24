@@ -223,7 +223,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// <summary>
     /// Output data for extra channels.
     /// </summary>
-    private List<JxlExtraChannelOutput> extraChannelOutputs = [];
+    private readonly List<JxlExtraChannelOutput> extraChannelOutputs = [];
 
     /// <summary>
     /// Codec metadata if present.
@@ -255,7 +255,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// </summary>
     private long nextSection;
 
-    private List<byte> sectionProcessed = [];
+    private readonly List<byte> sectionProcessed = [];
 
     /// <summary>
     /// The frame header, if present.
@@ -301,11 +301,11 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// <summary>
     /// All frame reference.s
     /// </summary>
-    private List<JxlFrameReference> frameReferences = [];
+    private readonly List<JxlFrameReference> frameReferences = [];
 
-    private List<int> frameExternalToInternal = [];
+    private readonly List<int> frameExternalToInternal = [];
 
-    private List<byte> frameRequired = [];
+    private readonly List<byte> frameRequired = [];
 
     /// <summary>
     /// Codestream input data is temporarily copied here.
@@ -802,7 +802,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                 throw new EndOfStreamException();
             }
 
-            if (secondByte == CodestreamMarker)
+            if (secondByte == JxlShared.CodestreamMarker)
             {
                 return JxlSignature.CodeStream;
             }
@@ -961,7 +961,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     {
         const long bufferLimit = 1 << 48;
         return length < bufferLimit &&
-            (length + this.jxlpOooBufferTotal + (this.codestreamCopy?.Memory.Length ?? 0)) < bufferLimit;
+            (length + this.jxlpOooBufferTotal + (this.codestreamCopy?.AsMemory().Length ?? 0)) < bufferLimit;
     }
 
     public bool TryInjectNextBufferedJxlpBox()
@@ -1471,14 +1471,14 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// Reads a single bundle into <paramref name="bundle"/>.
     /// </summary>
     /// <typeparam name="T">Type of the bundle to read.</typeparam>
-    /// <param name="data">Bundle binary data.</param>
+    /// <param name="stream">Stream to read data from.</param>
     /// <param name="br">Bit reader to continue from.</param>
     /// <param name="bundle">The bundle to parse.</param>
     /// <returns>Status of parsing the bundle.</returns>
-    private bool ReadBundle<T>(Span<byte> data, JxlBitReader br, T bundle)
+    private bool ReadBundle<T>(Stream stream, JxlBitReader br, T bundle)
         where T : IJxlFields
     {
-        JxlBitReader reader = new(data);
+        JxlBitReader reader = new(stream);
         reader.SkipBits64((ulong)br.TotalBitsConsumed);
 
         bool canRead = JxlBundle.CanRead(reader, bundle);
@@ -1645,22 +1645,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         }
 
         this.frameDecoder.ProcessSections(sectionInfo, sectionStatus);
-
-        bool outOfBounds = false;
-
-        foreach (JxlSectionInfo info in sectionInfo)
-        {
-            if (!info.BitReader.AllReadsWithinBounds)
-            {
-                outOfBounds = true;
-                break;
-            }
-        }
-
-        if (outOfBounds)
-        {
-            throw new InvalidOperationException("Frame out of bounds");
-        }
 
         for (int i = 0; i < sectionStatus.Count; i++)
         {
