@@ -11,7 +11,7 @@ internal sealed class JxlExtraChannelInfo : IJxlFields
 
     public JxlExtraChannel Type { get; set; }
 
-    public JxlBitDepth? BitDepth { get; set; }
+    public JxlBitDepthMetadata? BitDepth { get; set; }
 
     public int DimensionShift { get; set; }
 

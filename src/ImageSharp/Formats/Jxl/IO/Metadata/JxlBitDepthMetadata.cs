@@ -8,15 +8,15 @@ namespace SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 /// <summary>
 /// Represents the JPEG XL Bit Depth image metadata.
 /// </summary>
-internal sealed class JxlBitDepth : IJxlFields
+internal sealed class JxlBitDepthMetadata : IJxlFields
 {
     private uint bitsPerSample;
     private uint exponentBitsPerSample;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JxlBitDepth"/> class.
+    /// Initializes a new instance of the <see cref="JxlBitDepthMetadata"/> class.
     /// </summary>
-    public JxlBitDepth() => JxlBundle.Init(this);
+    public JxlBitDepthMetadata() => JxlBundle.Init(this);
 
     /// <summary>
     /// Gets or sets a value indicating whether

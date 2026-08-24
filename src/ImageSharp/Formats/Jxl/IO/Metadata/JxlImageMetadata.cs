@@ -10,7 +10,7 @@ internal sealed class JxlImageMetadata : IJxlFields
 {
     public bool AllDefault { get; set; }
 
-    public JxlBitDepth? BitDepth { get; set; }
+    public JxlBitDepthMetadata? BitDepth { get; set; }
 
     public bool Modular16BitBufferSufficient { get; set; } // Otherwise, 32 is
 

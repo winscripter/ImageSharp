@@ -442,7 +442,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// <summary>
     /// Bit depth for image output.
     /// </summary>
-    private JxlBitDepth imageOutputBitDepth = new();
+    private JxlBitDepthMetadata imageOutputBitDepth = new();
 
     public JxlDecoderCore(DecoderOptions options)
         : base(options)
@@ -593,32 +593,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         /// Container format.
         /// </summary>
         Container
-    }
-
-    /// <summary>
-    /// Represents a data type.
-    /// </summary>
-    private enum JxlDataType : byte
-    {
-        /// <summary>
-        /// <see cref="byte"/>
-        /// </summary>
-        UInt8,
-
-        /// <summary>
-        /// <see cref="ushort"/>
-        /// </summary>
-        UInt16,
-
-        /// <summary>
-        /// <see cref="float"/>
-        /// </summary>
-        Float,
-
-        /// <summary>
-        /// <see cref="Half"/>
-        /// </summary>
-        Float16
     }
 
     /// <summary>
@@ -858,12 +832,12 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         return JxlSignature.Invalid;
     }
 
-    private static int BitsPerChannel(JxlDataType dataType)
+    private static uint BitsPerChannel(JxlDataType dataType)
         => dataType switch
         {
-            JxlDataType.UInt8 => 8,
-            JxlDataType.UInt16 or JxlDataType.Float16 => 16,
-            JxlDataType.Float => 32,
+            JxlDataType.Byte => 8,
+            JxlDataType.UInt16 or JxlDataType.Half => 16,
+            JxlDataType.Single => 32,
             _ => 0
         };
 
