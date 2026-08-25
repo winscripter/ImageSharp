@@ -1508,7 +1508,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
             Span<byte> fileSignature = stackalloc byte[2];
             stream.ReadExactly(fileSignature);
 
-            if (fileSignature[0] != 0xFF || fileSignature[1] != CodestreamMarker)
+            if (fileSignature[0] != 0xFF || fileSignature[1] != JxlShared.CodestreamMarker)
             {
                 throw new InvalidOperationException("The file signature is invalid");
             }
@@ -1553,7 +1553,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
         {
             Span<byte> span = this.GetCodeStreamSpan();
 
-            JxlBitReader reader = new(span);
+            JxlBitReader reader = new(this.stream);
             reader.SkipBits64((ulong)this.codestreamBitsAhead);
 
             this.metadata!.CustomTransformData!.NonserializedXybEncoded = this.metadata.ImageMetadata!.XybEncoded;
@@ -2286,7 +2286,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                 {
                     if (this.decoderStage != JxlDecoderStage.CodeStreamFinished || this.JbrdNeedsMoreBoxes())
                     {
-                        return NeedMoreInput;
+                        ThrowNotEnoughData();
                     }
 
                     if (this.inputClosed || (this.eventsWanted & Box) != 0)
@@ -2294,7 +2294,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                         return Success;
                     }
 
-                    return NeedMoreInput;
+                    ThrowNotEnoughData();
                 }
 
                 bool boxedCodestreamDone = ((this.eventsWanted & Box) != 0)
@@ -2556,7 +2556,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
                 if (!boxDone)
                 {
-                    return NeedMoreInput;
+                    ThrowNotEnoughData();
                 }
 
                 this.boxStage = JxlBoxStage.Header;
