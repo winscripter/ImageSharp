@@ -347,7 +347,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// OOO jxlp payloads keyed by counter. Keys are: codestream bytes without
     /// 4byte header, and is_last.
     /// </summary>
-    private Dictionary<int, JxlOooEntry> jxlpOooBuffer = [];
+    private readonly Dictionary<int, JxlOooEntry> jxlpOooBuffer = [];
 
     private long jxlpOooBufferTotal;
 
@@ -358,14 +358,14 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// <summary>
     /// Decompresses box contents.
     /// </summary>
-    private JxlBoxContentDecoder? boxContentDecoder;
+    private readonly JxlBoxContentDecoder? boxContentDecoder;
 
     /// <summary>
     /// Decodes JPEG XL to JPEG.
     /// </summary>
     private JxlToJpegDecoder? jpegDecoder;
 
-    private JxlBoxContentDecoder? metadataDecoder;
+    private readonly JxlBoxContentDecoder? metadataDecoder;
 
     /// <summary>
     /// Raw bytes for EXIF metadata.
@@ -2363,13 +2363,13 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                 if ((this.eventsWanted & Box) != 0)
                 {
                     bool decompress = this.decompressBoxes && this.boxType == JxlBoxTypes.Brob;
-                    this.boxContentDecoder.StartBox(decompress, this.boxContentsUnbounded, this.boxContentsSize);
+                    this.boxContentDecoder!.Initialize(decompress, this.boxContentsUnbounded, (ulong)this.boxContentsSize);
                 }
 
                 if (this.storeExif == 1 || this.storeXmp == 1)
                 {
                     bool brob = this.boxType == JxlBoxTypes.Brob;
-                    this.metadataDecoder.StartBox(brob, this.boxContentsUnbounded, this.boxContentsSize);
+                    this.metadataDecoder!.Initialize(brob, this.boxContentsUnbounded, (ulong)this.boxContentsSize);
                 }
 
                 if (this.boxType == JxlBoxTypes.FileType)
@@ -2631,7 +2631,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                     }
 
                     this.AdvanceInput(this.availableInput);
-                    return NeedMoreInput;
+                    ThrowNotEnoughData();
                 }
 
                 long remaining = this.boxContentsEnd - this.filePosition;
@@ -2639,7 +2639,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                 {
                     this.basicInfoSizeHint = InitialBasicInfoSizeHint() + this.boxContentsEnd - this.filePosition;
                     this.AdvanceInput(this.availableInput);
-                    return NeedMoreInput;
+                    ThrowNotEnoughData();
                 }
                 else
                 {

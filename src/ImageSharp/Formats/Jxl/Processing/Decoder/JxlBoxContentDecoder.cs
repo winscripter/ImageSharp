@@ -8,7 +8,8 @@ using SixLabors.ImageSharp.Formats.Jxl.IO;
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 
 /// <summary>
-/// Allows decoding and decompressing box data.
+/// Allows decoding and decompressing box data in JPEG XL
+/// container format.
 /// </summary>
 internal sealed class JxlBoxContentDecoder
 {
