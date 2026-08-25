@@ -10,6 +10,34 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 /// </summary>
 internal sealed class JxlQuantizerEncoding
 {
+    public JxlQuantizerEncoding()
+    {
+    }
+
+    public JxlQuantizerEncoding(JxlQuantizerEncoding other)
+    {
+        // Simple shallow copy
+        this.AfvWeights = other.AfvWeights;
+        this.Dct2Weights = other.Dct2Weights;
+        this.Dct4Multipliers = other.Dct4Multipliers;
+        this.Dct4x8Multipliers = other.Dct4x8Multipliers;
+        this.DctParameters = other.DctParameters;
+        this.DctParametersAfv4x4 = other.DctParametersAfv4x4;
+        this.IdWeights = other.IdWeights;
+        this.Mode = other.Mode;
+        this.Predefined = other.Predefined;
+        this.QuantizationTable = other.QuantizationTable;
+        this.QuantizationTableDenominator = other.QuantizationTableDenominator;
+
+        if (other.QuantizationTable is not null)
+        {
+            // Do a deep clone for the quantization table.
+            // Using AsSpan() should be way faster than a normal array copy...
+            this.QuantizationTable = GC.AllocateUninitializedArray<int>(other.QuantizationTable.Length);
+            other.QuantizationTable.AsSpan().CopyTo(this.QuantizationTable);
+        }
+    }
+
     /// <summary>
     /// Gets or sets the kind of transform used for this quantizer encoding.
     /// </summary>
@@ -177,4 +205,23 @@ internal sealed class JxlQuantizerEncoding
             AfvWeights = weights,
             DctParametersAfv4x4 = params4x4
         };
+
+    /// <summary>
+    /// Creates a new raw quantizer encoding.
+    /// </summary>
+    /// <param name="quantizationTable">The quantization table for raw quantization.</param>
+    /// <param name="shift">The shift value for the denominator.</param>
+    /// <returns>A raw quantizer encoding.</returns>
+    public static JxlQuantizerEncoding Raw(Span<int> quantizationTable, int shift = 0)
+    {
+        JxlQuantizerEncoding encoding = new()
+        {
+            Mode = JxlQuantMode.Raw,
+            QuantizationTableDenominator = (1 << shift) * (1f / (8 * 255)),
+            QuantizationTable = GC.AllocateUninitializedArray<int>(quantizationTable.Length)
+        };
+
+        quantizationTable.CopyTo(encoding.QuantizationTable);
+        return encoding;
+    }
 }
