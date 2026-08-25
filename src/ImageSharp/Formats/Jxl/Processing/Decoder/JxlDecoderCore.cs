@@ -2111,6 +2111,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// <summary>
     /// Processes all boxes and their contents if this is a container format.
     /// </summary>
+    /// <param name="stream">Stream to decode from.</param>
     /// <returns>Status of processing.</returns>
     /// <exception cref="InvalidOperationException">Thrown when data is invalid.</exception>
     public int ProcessBoxes(Stream stream)
@@ -2664,24 +2665,16 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// <summary>
     /// Main core decoding routine.
     /// </summary>
+    /// <param name="stream">Stream to decode from.</param>
     /// <exception cref="InvalidOperationException">Thrown when data or input parameters are invalid.</exception>
-    public void DecodeInput()
+    public void DecodeInput(Stream stream)
     {
-        if (this.decoderStage == JxlDecoderStage.Initialized)
-        {
-            this.decoderStage = JxlDecoderStage.Started;
-        }
-
-        if (this.decoderStage == JxlDecoderStage.Error)
-        {
-            // Should NEVER occur! If it does make sure to always reset the decoder
-            // in the Decode<TPixel> method.
-            throw new InvalidOperationException("The core decoder cannot be used because it contains an error. A reset must be made.");
-        }
+        this.Reset();
+        this.decoderStage = JxlDecoderStage.Started;
 
         if (!this.gotSignature)
         {
-            JxlSignature signature = DetectSignature(this.nextInput, this.availableInput);
+            JxlSignature signature = DetectSignature(stream);
             if (signature == JxlSignature.Invalid)
             {
                 throw new InvalidOperationException("The signature is invalid.");
@@ -2709,12 +2702,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
             }
         }
 
-        int status = this.ProcessBoxes();
-
-        if (status == NeedMoreInput && this.inputClosed)
-        {
-            ThrowNotEnoughData();
-        }
+        int status = this.ProcessBoxes(stream);
 
         if (status == Success)
         {
