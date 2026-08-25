@@ -2138,11 +2138,8 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                     Span<byte> startSlice = bufferSpan[(int)this.boxOutBufferPos..];
 
                     int status = this.boxContentDecoder!.Process(
-                        this.nextInput,
-                        this.availableInput,
-                        this.filePosition - this.boxContentsBegin,
-                        nextOut,
-                        ref availOut);
+                        stream,
+                        this.boxOutputBuffer);
 
                     long produced = startSlice.Length - availOut;
                     this.boxOutBufferPos += produced;
@@ -2290,7 +2287,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                         ThrowNotEnoughData();
                     }
 
-                    if (this.inputClosed || (this.eventsWanted & JxlDecoderStatus.) != 0)
+                    if (this.inputClosed || (this.eventsWanted & JxlDecoderStatus.Box) != 0)
                     {
                         return JxlDecoderStatus.Success;
                     }
@@ -2704,7 +2701,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
         int status = this.ProcessBoxes(stream);
 
-        if (status == Success)
+        if (status == JxlDecoderStatus.Success)
         {
             if (this.CanUseMoreCodestreamInput())
             {

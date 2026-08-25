@@ -32,6 +32,31 @@ internal sealed class JxlFrameDecoder
     private JxlProgressiveDetail progressiveDetail = JxlProgressiveDetail.Frames;
     private List<int> passesToPause = [];
 
+    /// <summary>
+    /// Gets a value indicating whether there are any DC groups left to decode.
+    /// </summary>
+    private bool ContainsDcGroupToDecode => this.decodedDcGroups.Any(x => x == 0);
+
+    private static int GetStride(int width, JxlPixelFormat format)
+    {
+        if (!JxlMath.SafeMultiply(BytesPerChannel(format.DataType), format.Channels, out int xStride))
+        {
+            throw new InvalidOperationException("Image too large");
+        }
+
+        if (!JxlMath.SafeMultiply(xStride, width, out int yStride))
+        {
+            throw new InvalidOperationException("Image too large");
+        }
+
+        if (!JxlMath.SafeRoundUpTo(yStride, format.Align, yStride))
+        {
+            throw new InvalidOperationException("Image too large");
+        }
+
+        return yStride;
+    }
+
     public static void DecodeGlobalDcInfo(Configuration configuration, JxlBitReader reader, bool isJpeg, JxlPassesDecoderState state)
     {
         state.SharedStorage.Quantizer.Decode(reader);

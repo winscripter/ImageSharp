@@ -56,7 +56,7 @@ internal sealed class JxlBoxContentDecoder
             isUnbounded,
             size);
 
-    public void Process(Stream stream, JxlMemoryWriter writer)
+    public void Process(Stream stream, Stream writer)
     {
         byte[] cache = ArrayPool<byte>.Shared.Rent(16384);
 
