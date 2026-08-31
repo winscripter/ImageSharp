@@ -7,3 +7,5 @@ This folder contains logic to:
 - JXL to JPEG
 
 This does not contain a JPEG codec.
+
+Logic in this folder is used for JPEG&lt;-&gt;JXL lossless compression.
