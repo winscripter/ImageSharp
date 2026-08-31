@@ -109,13 +109,13 @@ internal sealed class JxlModularState
         int posNW = x > 0 ? posN - 1 : posN;
 
         Span<uint> weights = stackalloc uint[4];
-        ref uint headerW = ref this.header.GetWReference();
+        Span<uint> headerW = this.header.GetW();
 
         for (int i = 0; i < 4; i++)
         {
             Span<uint> error = this.predErrors[i].AsSpan();
             weights[i] = error[posN] + error[posNE] + error[posNW];
-            weights[i] = ErrorWeight((int)weights[i], Unsafe.Add(ref headerW, i));
+            weights[i] = ErrorWeight((int)weights[i], headerW[i]);
         }
 
         n = AddBits(n);

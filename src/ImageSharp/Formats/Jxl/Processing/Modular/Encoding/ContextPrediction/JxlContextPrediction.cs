@@ -2,7 +2,6 @@
 // Licensed under the Six Labors Split License.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Encoding.ContextPrediction;
 
@@ -17,8 +16,7 @@ internal static class JxlContextPrediction
 
     public static void SetPredictorMode(int i, JxlModularHeader header)
     {
-        ref uint wr = ref header.GetWReference();
-        Span<uint> w = MemoryMarshal.CreateSpan(ref wr, 4);
+        Span<uint> w = header.GetW();
 
         switch (i)
         {

@@ -101,10 +101,10 @@ internal sealed class JxlModularHeader : IJxlFields
     }
 
     /// <summary>
-    /// Returns a reference to the first w item.
+    /// Returns a span to the w array.
     /// </summary>
-    /// <returns>Reference to w[0]</returns>
-    public ref uint GetWReference() => ref this.w[0];
+    /// <returns>Reference to w</returns>
+    public Span<uint> GetW() => this.w;
 
     public bool Visit(JxlVisitor v)
     {
