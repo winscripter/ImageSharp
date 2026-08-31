@@ -1,7 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Jpeg;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Jpeg.Data;
 
 /// <summary>
 /// Identifies the kind of APP marker in a JPEG file.
