@@ -28,7 +28,7 @@ public sealed class JxlImageFormatDetector : IImageFormatDetector
     /// <inheritdoc/>
     public bool TryDetectFormat(ReadOnlySpan<byte> header, [NotNullWhen(true)] out IImageFormat? format)
     {
-        if (header[0] == 0xFF && header[1] == 0x0A)
+        if (header.StartsWith([(byte)0xFF, (byte)0x0A]))
         {
             // Just codestream.
             format = new JxlFormat();
