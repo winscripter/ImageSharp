@@ -108,7 +108,7 @@ internal sealed class JxlModularState
         int posNE = x < width - 1 ? posN + 1 : posN;
         int posNW = x > 0 ? posN - 1 : posN;
 
-        Span<uint> weights = stackalloc uint[4];
+        Span<uint> weights = [0, 0, 0, 0];
         Span<uint> headerW = this.header.GetW();
 
         for (int i = 0; i < 4; i++)
