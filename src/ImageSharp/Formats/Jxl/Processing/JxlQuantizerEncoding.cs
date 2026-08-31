@@ -1,8 +1,6 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using System.Runtime.CompilerServices;
-
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 /// <summary>
@@ -56,27 +54,27 @@ internal sealed class JxlQuantizerEncoding
     /// <summary>
     /// Gets or sets the weights for the identity transform.
     /// </summary>
-    public InlineArray3<InlineArray3<float>> IdWeights { get; set; }
+    public float[][]? IdWeights { get; set; }
 
     /// <summary>
     /// Gets or sets the weights for the DCT2 transform.
     /// </summary>
-    public InlineArray3<InlineArray6<float>> Dct2Weights { get; set; }
+    public float[][]? Dct2Weights { get; set; }
 
     /// <summary>
     /// Gets or sets the multipliers for the DCT4 transform.
     /// </summary>
-    public InlineArray3<InlineArray6<float>> Dct4Multipliers { get; set; }
+    public float[][]? Dct4Multipliers { get; set; }
 
     /// <summary>
     /// Gets or sets the weights for the AFV transform.
     /// </summary>
-    public InlineArray3<InlineArray9<float>> AfvWeights { get; set; }
+    public float[][]? AfvWeights { get; set; }
 
     /// <summary>
     /// Gets or sets the multipliers for the 4x8 DCT block-based transform.
     /// </summary>
-    public InlineArray3<float> Dct4x8Multipliers { get; set; }
+    public float[]? Dct4x8Multipliers { get; set; }
 
     /// <summary>
     /// Gets or sets the explicit quantization table (like in JPEG).
@@ -123,7 +121,7 @@ internal sealed class JxlQuantizerEncoding
     /// </summary>
     /// <param name="xybWeights">Weights for the identity transform.</param>
     /// <returns>A new Identity quantizer encoding.</returns>
-    public static JxlQuantizerEncoding Identity(in InlineArray3<InlineArray3<float>> xybWeights)
+    public static JxlQuantizerEncoding Identity(float[][] xybWeights)
         => new()
         {
             Mode = JxlQuantMode.Id,
@@ -136,7 +134,7 @@ internal sealed class JxlQuantizerEncoding
     /// </summary>
     /// <param name="xybWeights">Weights for the DCT2x2 transform.</param>
     /// <returns>A new DCT2x2 quantizer encoding.</returns>
-    public static JxlQuantizerEncoding Dct2(in InlineArray3<InlineArray6<float>> xybWeights)
+    public static JxlQuantizerEncoding Dct2(float[][] xybWeights)
         => new()
         {
             Mode = JxlQuantMode.Dct2,
@@ -150,7 +148,7 @@ internal sealed class JxlQuantizerEncoding
     /// <param name="parameters">Quantizer weights for the DCT4x4 transform.</param>
     /// <param name="xybMul">XYB multipliers for the DCT4x4 transform.</param>
     /// <returns>A new DCT4x4 quantizer encoding.</returns>
-    public static JxlQuantizerEncoding Dct4(JxlDctQuantWeightParameters parameters, in InlineArray3<InlineArray6<float>> xybMul)
+    public static JxlQuantizerEncoding Dct4(JxlDctQuantWeightParameters parameters, float[][] xybMul)
         => new()
         {
             Mode = JxlQuantMode.Dct4,
@@ -165,7 +163,7 @@ internal sealed class JxlQuantizerEncoding
     /// <param name="parameters">Quantizer weights for the DCT4x8 transform.</param>
     /// <param name="xybMul">XYB multipliers for the DCT4x8 transform.</param>
     /// <returns>A new DCT4x8 quantizer encoding.</returns>
-    public static JxlQuantizerEncoding Dct4x8(JxlDctQuantWeightParameters parameters, in InlineArray3<float> xybMul)
+    public static JxlQuantizerEncoding Dct4x8(JxlDctQuantWeightParameters parameters, float[] xybMul)
         => new()
         {
             Mode = JxlQuantMode.Dct4x8,
@@ -197,7 +195,7 @@ internal sealed class JxlQuantizerEncoding
     public static JxlQuantizerEncoding Afv(
         JxlDctQuantWeightParameters params4x8,
         JxlDctQuantWeightParameters params4x4,
-        in InlineArray3<InlineArray9<float>> weights)
+        float[][] weights)
         => new()
         {
             Mode = JxlQuantMode.Afv,

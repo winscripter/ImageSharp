@@ -134,7 +134,7 @@ internal sealed class JxlQuantizer
     /// <summary>
     /// Gets the default bias for quant.
     /// </summary>
-    private static ReadOnlySpan<float> DefaultQuantBias =>
+    public static ReadOnlySpan<float> DefaultQuantBias =>
     [
         1.0f - 0.05465007330715401f,
         1.0f - 0.07005449891748593f,
@@ -165,7 +165,7 @@ internal sealed class JxlQuantizer
     /// </summary>
     /// <param name="scale">The new scale</param>
     /// <returns>The scale value, scaled by the global scale.</returns>
-    private float ScaleGlobalScale(float scale)
+    public float ScaleGlobalScale(float scale)
     {
         int newGlobalScale = (int)MathF.Round(this.globalScale * scale, MidpointRounding.AwayFromZero);
         float scaleOut = newGlobalScale * 1.0f / this.globalScale;
@@ -199,7 +199,7 @@ internal sealed class JxlQuantizer
     /// <param name="c">The quantization index</param>
     /// <returns>The dequant matrix.</returns>
     public ReadOnlySpan<float> DequantMatrix(JxlAcStrategyType strategy, int c)
-        => this.dequant.Matrix(strategy, c);
+        => this.dequant!.GetMatrix(strategy, c);
 
     /// <summary>
     /// Returns the inverse dequant matrix.
@@ -208,21 +208,21 @@ internal sealed class JxlQuantizer
     /// <param name="c">The quantization index</param>
     /// <returns>The inverse dequant matrix.</returns>
     public ReadOnlySpan<float> InverseDequantMatrix(JxlAcStrategyType strategy, int c)
-        => this.dequant.InverseMatrix(strategy, c);
+        => this.dequant!.GetInverseMatrix(strategy, c);
 
     /// <summary>
     /// Returns the DC quantization step.
     /// </summary>
     /// <param name="c">The quantization index</param>
     /// <returns>The DC quantization step</returns>
-    public float GetDcStep(int c) => this.InverseQuantDc * this.dequant.DcQuant(c);
+    public float GetDcStep(int c) => this.InverseQuantDc * this.dequant!.GetDcQuant(c);
 
     /// <summary>
     /// Returns the inverse DC quantization step.
     /// </summary>
     /// <param name="c">The quantization index</param>
     /// <returns>The inverse DC quantization step</returns>
-    public float GetInverseDcStep(int c) => this.dequant.InverseDcQuant(c) * (this.Scale * this.quantDc);
+    public float GetInverseDcStep(int c) => this.dequant!.GetInverseDcQuant(c) * (this.Scale * this.quantDc);
 
     /// <summary>
     /// Creates JXL quantizer parameters with values reflecting those in this quantizer instance.

@@ -36,4 +36,29 @@ internal sealed class JxlTransform : IJxlFields
             }
         }
     }
+
+    public static void ComputeMinMax(JxlModularChannel channel, out int min, out int max)
+    {
+        // Start with opposite bounds so the first iteration
+        // guarantees to set these values
+        min = int.MaxValue;
+        max = int.MinValue;
+
+        for (int y = 0; y < channel.Height; y++)
+        {
+            Span<int> p = channel.GetRow(y);
+            for (int x = 0; x < channel.Width; x++)
+            {
+                if (p[x] < min)
+                {
+                    min = p[x];
+                }
+
+                if (p[x] > max)
+                {
+                    max = p[x];
+                }
+            }
+        }
+    }
 }

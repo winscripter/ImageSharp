@@ -8,12 +8,12 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Transforms;
 /// <summary>
 /// Parameters for the squeeze transform.
 /// </summary>
-internal sealed class JxlSqueezeParameters : IJxlFields
+internal struct JxlSqueezeParameters : IJxlFields
 {
     private bool horizontal;
     private bool inPlace;
-    private uint beginC;
-    private uint numC;
+    private int beginC;
+    private int numC;
 
     public JxlSqueezeParameters() => JxlBundle.Init(this);
 
@@ -22,7 +22,7 @@ internal sealed class JxlSqueezeParameters : IJxlFields
     /// </summary>
     public bool Horizontal
     {
-        get => this.horizontal;
+        readonly get => this.horizontal;
         set => this.horizontal = value;
     }
 
@@ -31,19 +31,19 @@ internal sealed class JxlSqueezeParameters : IJxlFields
     /// </summary>
     public bool InPlace
     {
-        get => this.inPlace;
+        readonly get => this.inPlace;
         set => this.inPlace = value;
     }
 
-    public uint BeginC
+    public int BeginC
     {
-        get => this.beginC;
+        readonly get => this.beginC;
         set => this.beginC = value;
     }
 
-    public uint NumC
+    public int NumC
     {
-        get => this.numC;
+        readonly get => this.numC;
         set => this.numC = value;
     }
 

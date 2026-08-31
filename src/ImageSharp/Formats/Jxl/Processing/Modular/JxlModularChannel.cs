@@ -1,27 +1,22 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using SixLabors.ImageSharp.Formats.Jxl.Memory;
+using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular;
 
 /// <summary>
-/// A wrapper over <see cref="JxlPlane{T}"/> for modular operations.
+/// A wrapper over <see cref="JxlImageI"/> for modular operations.
 /// </summary>
 internal sealed class JxlModularChannel
 {
-    /// <summary>
-    /// Underlying plane buffer.
-    /// </summary>
-    private JxlPlane<int> plane;
-
     public JxlModularChannel(Configuration configuration, int width, int height, int horizShift, int vertShift)
     {
         this.HorizontalShift = horizShift;
         this.VerticalShift = vertShift;
         this.Width = width;
         this.Height = height;
-        this.plane = JxlPlane<int>.Create(configuration, width, height);
+        this.Plane = new JxlImageI(configuration, width, height);
     }
 
     /// <summary>
@@ -55,15 +50,20 @@ internal sealed class JxlModularChannel
     /// </summary>
     public int Component { get; set; } = -1;
 
+    /// <summary>
+    /// Gets or sets the backing plane buffer.
+    /// </summary>
+    public JxlImageI Plane { get; set; }
+
     public void Shrink(Configuration configuration)
     {
-        if (this.plane.XSize == this.Width && this.plane.YSize == this.Height)
+        if (this.Plane.XSize == this.Width && this.Plane.YSize == this.Height)
         {
             return;
         }
 
-        this.plane.Dispose();
-        this.plane = JxlPlane<int>.Create(configuration, this.Width, this.Height);
+        this.Plane.Dispose();
+        this.Plane = new JxlImageI(configuration, this.Width, this.Height);
     }
 
     public void Shrink(Configuration configuration, int newWidth, int newHeight)
@@ -73,5 +73,5 @@ internal sealed class JxlModularChannel
         this.Shrink(configuration);
     }
 
-    public Span<int> GetRow(int y) => this.plane.GetRow(y);
+    public Span<int> GetRow(int y) => this.Plane.GetRow(y);
 }

@@ -3,6 +3,7 @@
 
 #pragma warning disable SA1401 // Fields should be private
 
+using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 using SixLabors.ImageSharp.Formats.Jxl.Processing;
 

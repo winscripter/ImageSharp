@@ -24,7 +24,7 @@ internal struct JxlPixelFormat
     /// big-endian or little-endian format. Applies to ushort
     /// and float data types.
     /// </summary>
-    public JxlEndianness Endianness { get; set; }
+    public ByteOrder Endianness { get; set; }
 
     /// <summary>
     /// Gets or sets the alignment of scanlines to a multiple of
