@@ -261,15 +261,7 @@ internal sealed class JxlQuantizer
         const int quantFieldTarget = 5;
         float scale = GlobalScaleDenominator * (quantMedian - quantMedianAbsd) / quantFieldTarget;
 
-        if (scale < 1)
-        {
-            scale = 1;
-        }
-
-        if (scale > (1 << 15))
-        {
-            scale = 1 << 15;
-        }
+        scale = Math.Clamp(scale, 1, 1 << 15);
 
         int newGlobalScale = (int)scale;
         int scaledQuantDc = (int)(quantDc * GlobalScaleNumerator * 1.6f);
