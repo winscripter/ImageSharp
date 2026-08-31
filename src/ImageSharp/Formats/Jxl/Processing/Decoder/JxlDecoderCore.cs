@@ -1505,7 +1505,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     {
         if (!this.gotCodestreamSignature)
         {
-            Span<byte> fileSignature = stackalloc byte[2];
+            Span<byte> fileSignature = [0, 0];
             stream.ReadExactly(fileSignature);
 
             if (fileSignature[0] != 0xFF || fileSignature[1] != JxlShared.CodestreamMarker)
