@@ -55,9 +55,5 @@ internal sealed class JxlDctAcImage<T> : IJxlDctAcImage, IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        this.image.Dispose();
-        GC.SuppressFinalize(this);
-    }
+    public void Dispose() => this.image.Dispose();
 }
