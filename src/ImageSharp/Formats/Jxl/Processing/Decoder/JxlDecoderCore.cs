@@ -1565,8 +1565,10 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
             }
 
             long totalBits = reader.TotalBitsConsumed;
-            this.AdvanceCodeStream(totalBits / JxlMath.BitsPerByte);
-            this.codestreamBitsAhead = totalBits % JxlMath.BitsPerByte;
+            (long div, long rem) = Math.DivRem(totalBits, JxlMath.BitsPerByte);
+
+            this.AdvanceCodeStream(div);
+            this.codestreamBitsAhead = rem;
             this.gotTransformData = true;
         }
 
