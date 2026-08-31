@@ -59,50 +59,45 @@ internal sealed class JxlBoxContentDecoder
     {
         byte[] cache = ArrayPool<byte>.Shared.Rent(16384);
 
-        try
+        if (this.codingMode == JxlBoxCodingMode.Brotli)
         {
-            if (this.codingMode == JxlBoxCodingMode.Brotli)
-            {
-                using BrotliStream brotli = new(stream, CompressionMode.Decompress, leaveOpen: true);
+            using BrotliStream brotli = new(stream, CompressionMode.Decompress, leaveOpen: true);
 
+            int bytesRead;
+            while ((bytesRead = brotli.Read(cache, 0, cache.Length)) > 0)
+            {
+                writer.Write(cache.AsSpan(0, bytesRead));
+            }
+        }
+        else
+        {
+            if (this.boxExtendsTillEnd)
+            {
                 int bytesRead;
-                while ((bytesRead = brotli.Read(cache, 0, cache.Length)) > 0)
+                while ((bytesRead = stream.Read(cache, 0, cache.Length)) > 0)
                 {
                     writer.Write(cache.AsSpan(0, bytesRead));
                 }
             }
             else
             {
-                if (this.boxExtendsTillEnd)
+                ulong bytesLeft = this.boxSize;
+                while (bytesLeft > 0)
                 {
-                    int bytesRead;
-                    while ((bytesRead = stream.Read(cache, 0, cache.Length)) > 0)
-                    {
-                        writer.Write(cache.AsSpan(0, bytesRead));
-                    }
-                }
-                else
-                {
-                    ulong bytesLeft = this.boxSize;
-                    while (bytesLeft > 0)
-                    {
-                        int toRead = (int)Math.Min((ulong)cache.Length, bytesLeft);
-                        int bytesRead = stream.Read(cache, 0, toRead);
+                    int toRead = (int)Math.Min((ulong)cache.Length, bytesLeft);
+                    int bytesRead = stream.Read(cache, 0, toRead);
 
-                        if (bytesRead == 0)
-                        {
-                            throw new EndOfStreamException("Unexpected EOF while reading box content");
-                        }
-
-                        writer.Write(cache.AsSpan(0, bytesRead));
-                        bytesLeft -= (ulong)bytesRead;
+                    if (bytesRead == 0)
+                    {
+                        throw new EndOfStreamException("Unexpected EOF while reading box content");
                     }
+
+                    writer.Write(cache.AsSpan(0, bytesRead));
+                    bytesLeft -= (ulong)bytesRead;
                 }
             }
         }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(cache);
-        }
+
+        ArrayPool<byte>.Shared.Return(cache);
     }
 }
