@@ -12,7 +12,7 @@ internal sealed class JxlColorCorrelation
     private float baseCorrelationX;
     private float baseCorrelationB = JxlOpsinConstants.YToBRatio;
 
-    private readonly float[] dcFactors = new float[4];
+    private InlineArray4<float> dcFactors;
     private uint colorFactor = JxlChromaFromLuma.DefaultColorFactor;
     private float colorScale = 1.0f / JxlChromaFromLuma.DefaultColorFactor;
 
