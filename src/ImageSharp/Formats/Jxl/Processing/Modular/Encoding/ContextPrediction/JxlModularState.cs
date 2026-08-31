@@ -72,7 +72,7 @@ internal sealed class JxlModularState
 
     public static long WeightedAverage(Span<long> p, Span<uint> w)
     {
-        uint weightSum = w[0] + w[1] + w[2] + w[3];
+        uint weightSum = (w[0] + w[1]) + (w[2] + w[3]);
 
         if (weightSum <= 15)
         {
