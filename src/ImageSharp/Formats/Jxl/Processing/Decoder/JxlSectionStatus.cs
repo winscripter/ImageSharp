@@ -6,7 +6,7 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 /// <summary>
 /// Status of processing a section.
 /// </summary>
-internal enum JxlSectionStatus
+internal enum JxlSectionStatus : byte
 {
     /// <summary>
     /// Processed normally.
