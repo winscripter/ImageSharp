@@ -67,6 +67,16 @@ internal sealed class JxlAuxiliaryOutput
 
         this.NumberOfBlocks += victim.NumberOfBlocks;
         this.NumberOfSmallBlocks += victim.NumberOfSmallBlocks;
-
+        this.NumberOfDct4x8Blocks += victim.NumberOfDct4x8Blocks;
+        this.NumberOfAfvBlocks += victim.NumberOfAfvBlocks;
+        this.NumberOfDct8Blocks += victim.NumberOfDct8Blocks;
+        this.NumberOfDct8x16Blocks += victim.NumberOfDct8x16Blocks;
+        this.NumberOfDct8x32Blocks += victim.NumberOfDct8x32Blocks;
+        this.NumberOfDct16Blocks += victim.NumberOfDct16Blocks;
+        this.NumberOfDct16x32Blocks += victim.NumberOfDct16x32Blocks;
+        this.NumberOfDct32Blocks += victim.NumberOfDct32Blocks;
+        this.NumberOfDct32x64Blocks += victim.NumberOfDct32x64Blocks;
+        this.NumberOfDct64Blocks += victim.NumberOfDct64Blocks;
+        this.NumberOfButteraugliIterations += victim.NumberOfButteraugliIterations;
     }
 }

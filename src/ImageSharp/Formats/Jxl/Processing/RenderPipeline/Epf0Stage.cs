@@ -103,7 +103,6 @@ internal sealed class Epf0Stage : RenderPipelineStageBase
 
             Vector256<float> vsm = Vector256.Create<float>(sadMul[ix..]);
             Vector256<float> inverseSigma = Vector256.Create<float>(rowSigma[bx]) * vsm;
-
         }
     }
 }

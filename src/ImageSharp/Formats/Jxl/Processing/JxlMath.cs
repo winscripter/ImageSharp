@@ -3,7 +3,6 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using SixLabors.ImageSharp.Common.Helpers;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
@@ -687,25 +686,7 @@ internal static class JxlMath
     /// <param name="x">X</param>
     /// <param name="y">Y</param>
     /// <returns>Hypotenuse of x and y</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double Hypot(double x, double y)
-    {
-        x = Math.Abs(x);
-        y = Math.Abs(y);
-
-        if (x < y)
-        {
-            RuntimeUtility.Swap(ref x, ref y);
-        }
-
-        if (x == 0.0)
-        {
-            return 0.0;
-        }
-
-        double ratio = y / x;
-        return x * Math.Sqrt(1 + (ratio * ratio));
-    }
+    public static float Hypot(float x, float y) => Hypot<float>(x, y);
 
     /// <summary>
     /// Computes the hypotenuse of x and y.
@@ -713,23 +694,26 @@ internal static class JxlMath
     /// <param name="x">X</param>
     /// <param name="y">Y</param>
     /// <returns>Hypotenuse of x and y</returns>
+    public static double Hypot(double x, double y) => Hypot<double>(x, y);
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float Hypot(float x, float y)
+    private static T Hypot<T>(T x, T y)
+        where T : INumber<T>, IRootFunctions<T>
     {
-        x = MathF.Abs(x);
-        y = MathF.Abs(y);
+        x = T.Abs(x);
+        y = T.Abs(y);
 
         if (x < y)
         {
-            RuntimeUtility.Swap(ref x, ref y);
+            (y, x) = (x, y);
         }
 
-        if (x == 0.0f)
+        if (x == T.Zero)
         {
-            return 0.0f;
+            return T.Zero;
         }
 
-        float ratio = y / x;
-        return x * MathF.Sqrt(1 + (ratio * ratio));
+        T ratio = y / x;
+        return x * T.Sqrt(T.One + (ratio * ratio));
     }
 }

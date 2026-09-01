@@ -492,7 +492,7 @@ internal static class JxlPalette
 
         if (a.Length >= 3)
         {
-            ave3 = (a[0] + b[0] + a[1] + b[1] + a[2] + b[2]) * (1.21f / 3.0f);
+            ave3 = ((a[0] + b[0]) + (a[1] + b[1]) + (a[2] + b[2])) * (1.21f / 3.0f);
         }
 
         float sumA = 0;

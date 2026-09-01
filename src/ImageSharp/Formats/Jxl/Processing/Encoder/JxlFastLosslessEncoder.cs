@@ -163,7 +163,7 @@ internal sealed class JxlFastLosslessEncoder
         /// A wrapper over the color data of the channel at the specified
         /// position.
         /// </returns>
-        public Span<T> GetColorChannelData<T>(int x, int y, int width, int height, out long rowOffset)
+        Span<T> GetColorChannelData<T>(int x, int y, int width, int height, out long rowOffset)
             where T : unmanaged;
     }
 

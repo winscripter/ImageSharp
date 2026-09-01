@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.RenderPipeline;
 
-internal record struct RenderPipelineStageConfiguration(int BorderX, int BorderY, int ShiftX, int ShiftY)
+internal readonly record struct RenderPipelineStageConfiguration(int BorderX, int BorderY, int ShiftX, int ShiftY)
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RenderPipelineStageConfiguration CreateShiftX(int shift, int border) => new(border, 0, shift, 0);

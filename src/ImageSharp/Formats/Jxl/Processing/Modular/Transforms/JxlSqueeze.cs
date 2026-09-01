@@ -27,6 +27,15 @@ internal static class JxlSqueeze
 {
     private const int MaxFirstPreviewSize = 8;
 
+    /// <summary>
+    /// Computes the average of two integers.
+    /// </summary>
+    /// <param name="x">First integer</param>
+    /// <param name="y">Second integer</param>
+    /// <returns>The average of x, y.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Average(int x, int y) => (x + y + ((x > y) ? 1 : 0)) >> 1;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int SmoothTendency(int b, int a, int n)
     {
@@ -534,10 +543,8 @@ internal static class JxlSqueeze
         int c1 = parameter.BeginC;
         int c2 = parameter.BeginC + parameter.NumC - 1;
 
-        if (c1 < 0 ||
-            c1 >= numChannels ||
-            c2 < 0 ||
-            c2 >= numChannels ||
+        if ((uint)c1 >= numChannels ||
+            (uint)c2 >= numChannels ||
             c2 < c1)
         {
             throw new InvalidOperationException("Invalid channel range");
@@ -654,7 +661,7 @@ internal static class JxlSqueeze
 
                 int a = pIn[x2];
                 int b = pIn[x2 + 1];
-                int avg = Numerics.Average(a, b);
+                int avg = Average(a, b);
                 pOut[x] = avg;
                 int diff = a - b;
                 int nextAvg = avg;
@@ -664,7 +671,7 @@ internal static class JxlSqueeze
                     int c2 = pIn[x2 + 2]; // actually C, but 1. variable 'c' already defined 2. names should be camelCase
                     int d = pIn[x2 + 3];
 
-                    nextAvg = Numerics.Average(c2, d);
+                    nextAvg = Average(c2, d);
                 }
                 else if ((inputChannel.Width & 1) != 0)
                 {
@@ -711,7 +718,7 @@ internal static class JxlSqueeze
             {
                 int a = pIn[x];
                 int b = pIn[x + oneRowInput];
-                int avg = Numerics.Average(a, b);
+                int avg = Average(a, b);
                 pOut[x] = avg;
                 int diff = a - b;
                 int nextAvg = avg;
@@ -720,7 +727,7 @@ internal static class JxlSqueeze
                 {
                     int c2 = pIn[x + (2 * oneRowInput)]; // actually C, but 1. variable 'c' already defined 2. names should be camelCase
                     int d = pIn[x + (3 * oneRowInput)];
-                    nextAvg = Numerics.Average(c2, d);
+                    nextAvg = Average(c2, d);
                 }
                 else if ((inputChannel.Height & 1) != 0)
                 {

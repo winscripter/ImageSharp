@@ -1033,13 +1033,4 @@ internal static class Numerics
     public static nuint Vector512Count<TVector>(int length)
         where TVector : struct
         => (uint)length / (uint)Vector512<TVector>.Count;
-
-    /// <summary>
-    /// Computes the average of two integers.
-    /// </summary>
-    /// <param name="x">First integer</param>
-    /// <param name="y">Second integer</param>
-    /// <returns>The average of x, y.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Average(int x, int y) => (x + y + ((x > y) ? 1 : 0)) >> 1;
 }
