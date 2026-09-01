@@ -1,6 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+using System.Numerics.Tensors;
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Transforms;
@@ -46,19 +47,13 @@ internal sealed class JxlTransform : IJxlFields
 
         for (int y = 0; y < channel.Height; y++)
         {
-            Span<int> p = channel.GetRow(y);
-            for (int x = 0; x < channel.Width; x++)
-            {
-                if (p[x] < min)
-                {
-                    min = p[x];
-                }
+            ReadOnlySpan<int> p = channel.GetRow(y);
 
-                if (p[x] > max)
-                {
-                    max = p[x];
-                }
-            }
+            int minRow = TensorPrimitives.Min(p);
+            int maxRow = TensorPrimitives.Max(p);
+
+            min = Math.Min(minRow, min);
+            max = Math.Max(maxRow, max);
         }
     }
 }

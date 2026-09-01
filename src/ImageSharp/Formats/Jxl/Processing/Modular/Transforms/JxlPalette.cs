@@ -658,6 +658,11 @@ internal static class JxlPalette
         DebugGuard.MustBeGreaterThanOrEqualTo(beginC, input.MetaChannels, nameof(beginC));
         int nb = endC - beginC + 1; // inclusive number of channels
 
+        // TODO: if this assert below triggers, increase nb to 6 and update
+        // the stack allocation for the 'tmp' variable below
+        // so the size is big enough.
+        DebugGuard.MustBeLessThanOrEqualTo(nb, 5, nameof(nb));
+
         JxlModularChannel beginCChannel = input.Channels[beginC];
         int w = beginCChannel.Width;
         int h = beginCChannel.Height;
@@ -1036,10 +1041,11 @@ internal static class JxlPalette
             errorRow[2] = new(nb, w + 4);
         }
 
-        Span<int> bestValue = stackalloc int[nb];
-        Span<int> idealResidual = stackalloc int[nb];
-        Span<int> quantizedValue = stackalloc int[nb];
-        Span<int> predictions = stackalloc int[nb];
+        Span<int> tmp = stackalloc int[32]; // Power of 2
+        Span<int> bestValue = tmp.Slice(0 * nb, nb);
+        Span<int> idealResidual = tmp.Slice(1 * nb, nb);
+        Span<int> quantizedValue = tmp.Slice(2 * nb, nb);
+        Span<int> predictions = tmp.Slice(30 * nb, nb);
 
         // This is a temporary buffer, values are copied here.
         // It is so we can swap spans. Since spans are just a view
@@ -1051,7 +1057,7 @@ internal static class JxlPalette
         {
             for (int c = 0; c < nb; c++)
             {
-                p_in[c] = input.channel[begin_c + c].Row(y);
+                p_in[c] = input.channel[beginC + c].Row(y);
                 if (lossy)
                     p_quant[c] = quantized_input.channel[c].Row(y);
             }
@@ -1076,10 +1082,7 @@ internal static class JxlPalette
                     bool best_is_delta = false;
                     float best_distance = float.PositiveInfinity;
 
-                    bestValue.Clear();
-                    idealResidual.Clear();
-                    quantizedValue.Clear();
-                    predictions.Clear();
+                    tmp.Clear();
 
                     foreach (double diffusion_multiplier in (Span<double>)[0.55, 0.75])
                     {
