@@ -147,8 +147,11 @@ internal sealed class JxlFastLosslessEncoder
     /// <summary>
     /// Abstracts access to a raster frame data required for encoding.
     /// </summary>
-    internal interface IFjxlFrameInputSource : IDisposable
+    internal abstract class IFjxlFrameInputSource : IDisposable
     {
+        /// <inheritdoc />
+        public abstract void Dispose();
+
         /// <summary>
         /// Returns a span that wraps over channel color data at the
         /// specified rectangular position.
@@ -163,7 +166,7 @@ internal sealed class JxlFastLosslessEncoder
         /// A wrapper over the color data of the channel at the specified
         /// position.
         /// </returns>
-        Span<T> GetColorChannelData<T>(int x, int y, int width, int height, out long rowOffset)
+        public abstract Span<T> GetColorChannelData<T>(int x, int y, int width, int height, out long rowOffset)
             where T : unmanaged;
     }
 
