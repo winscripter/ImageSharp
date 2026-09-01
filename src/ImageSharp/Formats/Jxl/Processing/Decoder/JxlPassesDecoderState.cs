@@ -3,6 +3,7 @@
 
 using SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Dct;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 

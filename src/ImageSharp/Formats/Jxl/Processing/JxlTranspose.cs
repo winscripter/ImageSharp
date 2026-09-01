@@ -1,6 +1,8 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Dct;
+
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
 /// <summary>

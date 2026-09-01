@@ -2,6 +2,7 @@
 // Licensed under the Six Labors Split License.
 
 using System.Runtime.CompilerServices;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.AcStrategy;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 

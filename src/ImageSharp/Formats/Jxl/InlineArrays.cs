@@ -17,6 +17,15 @@ internal struct InlineArray55<T>
 }
 
 /// <summary>
+/// Used by JpegQuantizationTable
+/// </summary>
+[InlineArray(64)]
+internal struct InlineArray64<T>
+{
+    private T first;
+}
+
+/// <summary>
 /// Used by JxlCustomTransformData
 /// </summary>
 [InlineArray(210)]
