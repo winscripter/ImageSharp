@@ -8,6 +8,7 @@ using SixLabors.ImageSharp.Formats.Jxl.Fields;
 using SixLabors.ImageSharp.Formats.Jxl.IO;
 using SixLabors.ImageSharp.Formats.Jxl.IO.Container;
 using SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;
+using SixLabors.ImageSharp.Formats.Jxl.IO.Jpeg.Data;
 using SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 using SixLabors.ImageSharp.Formats.Jxl.Processing.Primitives;
 using SixLabors.ImageSharp.IO;
@@ -2241,7 +2242,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
             if (this.reconstructionOutputJpeg == JpegReconstructionStage.SetMetadata && this.JbrdNeedsMoreBoxes())
             {
-                JxlJpegData jpegData = this.imageBundle!.JpegData.GetData();
+                JpegData jpegData = this.imageBundle!.JpegData.GetData();
 
                 if (this.reconstructionExifSize > 0)
                 {
@@ -2580,7 +2581,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
                 if (reconstructionResult == JxlDecoderStatus.JpegReconstruction)
                 {
-                    JxlJpegData jpegData = this.jpegDecoder!.GetJpegData();
+                    JpegData jpegData = this.jpegDecoder!.GetJpegData();
                     long numExif = JxlToJpegDecoder.NumExifMarkers(jpegData);
                     long numXmp = JxlToJpegDecoder.NumXmpMarkers(jpegData);
 

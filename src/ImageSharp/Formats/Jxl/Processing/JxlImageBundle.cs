@@ -3,6 +3,7 @@
 
 using SixLabors.ImageSharp.Formats.Jxl.Cms;
 using SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;
+using SixLabors.ImageSharp.Formats.Jxl.IO.Jpeg.Data;
 using SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
 
@@ -79,7 +80,7 @@ internal sealed class JxlImageBundle
     /// <summary>
     /// Gets or sets the JPEG data if the input image was converted to JPEG XL from a JPEG.
     /// </summary>
-    public JxlJpegData? JpegData { get; set; }
+    public JpegData? JpegData { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether returns the image does or will represent quantized DCT-8 coefficients
