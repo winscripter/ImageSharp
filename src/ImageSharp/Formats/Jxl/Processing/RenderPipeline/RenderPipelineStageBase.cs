@@ -71,8 +71,14 @@ internal abstract class RenderPipelineStageBase(Configuration configuration) : I
     public Span<float> GetInputRow(Buffer2D<Memory<float>> inputRows, int c, int offset)
         => inputRows[c, this.Settings.BorderY + offset].Span[RenderPipelineXOffset..];
 
+    public Span<float> GetInputRow(Buffer2D<Memory<float>> inputRows, int c, int offset, int xExtraLeft)
+        => inputRows[c, this.Settings.BorderY + offset].Span[(RenderPipelineXOffset - xExtraLeft)..];
+
     public Memory<float> GetInputRowMemory(Buffer2D<Memory<float>> inputRows, int c, int offset)
         => inputRows[c, this.Settings.BorderY + offset][RenderPipelineXOffset..];
+
+    public Memory<float> GetInputRowMemory(Buffer2D<Memory<float>> inputRows, int c, int offset, int xExtraLeft)
+        => inputRows[c, this.Settings.BorderY + offset][(RenderPipelineXOffset - xExtraLeft)..];
 
     public static Span<float> GetOutputRow(Buffer2D<Memory<float>> outputRows, int c, int offset)
         => outputRows[c, offset].Span[RenderPipelineXOffset..];

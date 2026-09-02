@@ -53,7 +53,7 @@ internal sealed class JxlPatchDictionary
         this.blendingsStride = (int)(numExtraChannels + 1);
 
         List<byte> contextMap = [];
-        var code = new JxlAnsCode();
+        JxlAnsCode code = new();
 
         var status = DecodeHistograms(
             memoryManager,
