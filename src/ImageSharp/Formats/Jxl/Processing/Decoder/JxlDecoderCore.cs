@@ -1928,8 +1928,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                             new PixelCallback(
                                 this.imageOutputInitCallback,
                                 this.imageOutputRunCallback,
-                                this.imageOutputDestroyCallback,
-                                this.imageOutputInitOpaque),
+                                this.imageOutputDestroyCallback),
                             this.imageOutBuffer,
                             this.imageOutputSize,
                             dimensions.Width,
