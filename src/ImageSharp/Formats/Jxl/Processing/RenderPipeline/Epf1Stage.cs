@@ -13,7 +13,7 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.RenderPipeline;
 /// <summary>
 /// Edge Preserving Filter (type 1) stage.
 /// </summary>
-internal class Epf1Stage : RenderPipelineStageBase
+internal sealed class Epf1Stage : RenderPipelineStageBase
 {
     private readonly JxlLoopFilter loopFilter;
     private readonly JxlImageF sigma;
