@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static SixLabors.ImageSharp.Formats.Jxl.Processing.JxlFrameDimensions;
+using static SixLabors.ImageSharp.Formats.Jxl.Processing.Primitives.JxlFrameDimensions;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.AcStrategy;
 

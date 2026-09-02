@@ -5,8 +5,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp.Formats.Jxl.Memory;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Primitives;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Image;
 
 /// <summary>
 /// Provides methods for processing 2D views of memory used by the

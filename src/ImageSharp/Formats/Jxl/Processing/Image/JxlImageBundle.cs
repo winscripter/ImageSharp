@@ -7,7 +7,7 @@ using SixLabors.ImageSharp.Formats.Jxl.IO.Jpeg.Data;
 using SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Image;
 
 /// <summary>
 /// An image bundle.

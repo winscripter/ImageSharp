@@ -4,7 +4,7 @@
 using SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 using SixLabors.ImageSharp.Formats.Jxl.Processing.Noise;
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
+namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Image;
 
 /// <summary>
 /// Image features for the JPEG XL passes decoder

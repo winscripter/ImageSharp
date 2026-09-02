@@ -2,7 +2,7 @@
 // Licensed under the Six Labors Split License.
 
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
-using static SixLabors.ImageSharp.Formats.Jxl.Processing.JxlFrameDimensions;
+using static SixLabors.ImageSharp.Formats.Jxl.Processing.Primitives.JxlFrameDimensions;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 

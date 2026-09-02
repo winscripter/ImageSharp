@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.IO.Compression;
+using SixLabors.ImageSharp.Formats.Jxl.IO;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Decoder;
 

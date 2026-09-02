@@ -1,7 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Primitives;
+namespace SixLabors.ImageSharp.Formats.Jxl.IO;
 
 /// <summary>
 /// Specifies which data type to use for sample values
