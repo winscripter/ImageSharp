@@ -45,11 +45,7 @@ internal static class JxlCoefficientOrder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint CoeffOrderContext(uint value)
     {
-        uint token = 0;
-        uint nbits = 0;
-        uint bits = 0;
-
-        new JxlAnsHybridUIntConfiguration(0, 0, 0).Encode(value, ref token, ref nbits, ref bits);
+        new JxlAnsHybridUIntConfiguration(0, 0, 0).Encode(value, out uint token, out uint nbits, out uint bits);
 
         return Math.Min(token, PermutationContexts - 1u);
     }

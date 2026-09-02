@@ -31,7 +31,7 @@ internal sealed class JxlAnsHybridUIntConfiguration : IJxlFields
 
     public uint LsbMask => (1u << (int)this.LsbInToken) - 1;
 
-    public void Encode(uint value, ref uint token, ref uint bitCount, ref uint bits)
+    public void Encode(uint value, out uint token, out uint bitCount, out uint bits)
     {
         if (value < this.SplitToken)
         {
