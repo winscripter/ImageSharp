@@ -11,13 +11,8 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.RenderPipeline;
 /// <summary>
 /// SIMD-based conversion from Y'Cb'Cr to RGB pixel buffers.
 /// </summary>
-internal sealed class YCbCrStage : RenderPipelineStageBase
+internal sealed class YCbCrStage(Configuration configuration) : RenderPipelineStageBase(configuration)
 {
-    public YCbCrStage(Configuration configuration)
-        : base(configuration)
-    {
-    }
-
     /// <inheritdoc />
     public override string Name => "YCbCr";
 
