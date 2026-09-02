@@ -1,7 +1,6 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
-using System.Numerics;
 using System.Numerics.Tensors;
 using System.Runtime.CompilerServices;
 
@@ -66,7 +65,7 @@ internal sealed class JxlNoiseHistogram
 
         int next = i + 1;
 
-        while (next < Bins && this.bins[next] == 0)
+        while ((uint)next < this.bins.Length && this.bins[next] == 0)
         {
             next++;
         }
@@ -78,10 +77,8 @@ internal sealed class JxlNoiseHistogram
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static T ClampX<T>(T x)
-        where T : unmanaged, INumber<T>
-        => T.Clamp(x, T.Zero, T.CreateSaturating(Bins - 1));
+    private static double ClampX(double x) => Math.Clamp(x, 0, Bins - 1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int Index(float x) => ClampX((int)x);
+    private static int Index(float x) => (int)ClampX((int)x);
 }
