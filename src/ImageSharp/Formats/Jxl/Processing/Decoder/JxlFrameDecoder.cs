@@ -1,6 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+using SixLabors.ImageSharp.Formats.Jxl.IO;
 using SixLabors.ImageSharp.Formats.Jxl.IO.FrameHeader;
 using SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
 using SixLabors.ImageSharp.Formats.Jxl.Processing.Image;
@@ -132,5 +133,29 @@ internal sealed class JxlFrameDecoder
         }
 
         frameDecoder.FinalizeFrame();
+    }
+
+    private static int BytesPerChannel(JxlDataType dataType) =>
+        dataType == JxlDataType.Byte ? 1
+           : dataType == JxlDataType.Single
+              ? 4
+              : 2;
+
+    private int GetStorageLocation(int thread, int task) => this.useTaskId ? task : thread;
+
+    private void PrepareStorage(int numThreads, int numTasks)
+    {
+        int storageSize = Math.Min(numThreads, numTasks);
+        if (storageSize > this.groupDecoderCaches.Count)
+        {
+            this.groupDecoderCaches = [.. this.groupDecoderCaches.Take(storageSize)];
+        }
+
+        this.useTaskId = numThreads > numTasks;
+        bool useNoise = (this.frameHeader.Flags & (int)JxlFrameHeaderFlags.Noise) != 0;
+        bool useGroupIds = this.modularFrameDecoder.UsesFullImage && (this.frameHeader.Encoding == JxlFrameEncoding.VarDct || useNoise);
+
+        this.decoderState.RenderPipeline?.PrepareForThreads(storageSize, useGroupIds);
+        this.decoderState.Upsampler8x.PrepareForThreads(numThreads);
     }
 }
