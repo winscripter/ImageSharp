@@ -3,6 +3,7 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using SixLabors.ImageSharp.Common.Helpers;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 
@@ -705,7 +706,7 @@ internal static class JxlMath
 
         if (x < y)
         {
-            (y, x) = (x, y);
+            RuntimeUtility.Swap(ref x, ref y);
         }
 
         if (x == T.Zero)

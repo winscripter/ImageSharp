@@ -113,7 +113,7 @@ internal sealed class JpegData : IJxlFields
             }
 
             int len = jpegData.AppData[i].Count - 17;
-            if (iccPos + len > icc.Length)
+            if (iccPos > icc.Length - len)
             {
                 throw new InvalidOperationException("ICC length is less than APP markers: requested " + len + " more bytes, " + (icc.Length - iccPos) + " available");
             }
@@ -144,24 +144,23 @@ internal sealed class JpegData : IJxlFields
             info.NumberOfAppMarkers++;
         }
 
-        if (marker == 0xfe)
+        switch (marker)
         {
-            info.NumberOfComMarkers++;
-        }
+            case 0xFE:
+                info.NumberOfComMarkers++;
+                break;
 
-        if (marker == 0xda)
-        {
-            info.NumberOfScans++;
-        }
+            case 0xDA:
+                info.NumberOfScans++;
+                break;
 
-        if (marker == 0xff)
-        {
-            info.NumberOfIntermarkers++;
-        }
+            case 0xFF:
+                info.NumberOfIntermarkers++;
+                break;
 
-        if (marker == 0xdd)
-        {
-            info.HasDri = true;
+            case 0xDD:
+                info.HasDri = true;
+                break;
         }
 
         return true;
@@ -918,10 +917,6 @@ internal sealed class JpegData : IJxlFields
 
         InlineArray4<bool> acOk = default;
         InlineArray4<bool> dcOk = default;
-
-        // All values of acOk, dcOk by default are false.
-        acOk[0] = acOk[1] = acOk[2] = acOk[3] = false;
-        dcOk[0] = dcOk[1] = dcOk[2] = dcOk[3] = false;
 
         Span<byte> markerOrderSpan = CollectionsMarshal.AsSpan(this.MarkerOrder);
 

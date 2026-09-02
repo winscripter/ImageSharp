@@ -30,6 +30,10 @@ internal static class JxlSqueeze
     /// <summary>
     /// Computes the average of two integers.
     /// </summary>
+    /// <remarks>
+    /// This method is specific to the Squeeze transform.
+    /// It is not a generic average method.
+    /// </remarks>
     /// <param name="x">First integer</param>
     /// <param name="y">Second integer</param>
     /// <returns>The average of x, y.</returns>

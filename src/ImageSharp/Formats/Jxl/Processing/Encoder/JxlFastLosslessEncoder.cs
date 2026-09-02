@@ -53,7 +53,7 @@ internal sealed class JxlFastLosslessEncoder
     /// <summary>
     /// Input frame data is stored here.
     /// </summary>
-    private readonly IFjxlFrameInputSource input;
+    private readonly FjxlFrameInputSource input;
 
     /// <summary>
     /// Image width of the input image.
@@ -147,7 +147,7 @@ internal sealed class JxlFastLosslessEncoder
     /// <summary>
     /// Abstracts access to a raster frame data required for encoding.
     /// </summary>
-    internal abstract class IFjxlFrameInputSource : IDisposable
+    internal abstract class FjxlFrameInputSource : IDisposable
     {
         /// <inheritdoc />
         public abstract void Dispose();
