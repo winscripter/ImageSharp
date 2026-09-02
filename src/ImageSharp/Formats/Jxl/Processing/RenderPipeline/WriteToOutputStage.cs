@@ -1,6 +1,9 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+using SixLabors.ImageSharp.Formats.Jxl.IO.Metadata;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Image;
+
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.RenderPipeline;
 
 internal sealed class WriteToOutputStage
@@ -209,4 +212,22 @@ internal sealed class WriteToOutputStage
         0.04825f, -0.07914f, -0.39954f, 0.12160f, 0.29145f, 0.00965f, -0.37638f, 0.32233f,
         0.20267f, -0.17564f, 0.39182f, 0.12160f, 0.18336f, 0.32619f, 0.26057f, 0.49219f
     ];
+
+    private static bool ShouldFlipX(JxlExifOrientation orientation) =>
+        orientation is JxlExifOrientation.FlipHorizontal or
+            JxlExifOrientation.Rotate180 or
+            JxlExifOrientation.Rotate270 or
+            JxlExifOrientation.AntiTranspose;
+
+    private static bool ShouldFlipY(JxlExifOrientation orientation) =>
+        orientation is JxlExifOrientation.FlipVertical or
+            JxlExifOrientation.Rotate180 or
+            JxlExifOrientation.Rotate90 or
+            JxlExifOrientation.AntiTranspose;
+
+    private static bool ShouldTranspose(JxlExifOrientation orientation) =>
+        orientation is JxlExifOrientation.Transpose or
+            JxlExifOrientation.Rotate90 or
+            JxlExifOrientation.Rotate270 or
+            JxlExifOrientation.AntiTranspose;
 }

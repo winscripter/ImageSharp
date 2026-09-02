@@ -9,7 +9,7 @@ internal enum JxlExifOrientation : byte
     FlipHorizontal = 2,
     Rotate180 = 3,
     FlipVertical = 4,
-    Transponse = 5,
+    Transpose = 5,
     Rotate90 = 6,
     AntiTranspose = 7,
     Rotate270 = 8
