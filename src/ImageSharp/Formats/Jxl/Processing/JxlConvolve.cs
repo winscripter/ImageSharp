@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
+using SixLabors.ImageSharp.Formats.Jxl.Memory;
 using SixLabors.ImageSharp.Formats.Jxl.Memory.ImageTypes;
 using SixLabors.ImageSharp.Formats.Jxl.Processing.Primitives;
 
@@ -70,7 +71,7 @@ internal static class JxlConvolve
         return sum2 + (sum1 + sum0);
     }
 
-    public static float Symmetric5Border(JxlImageF input, Func<long, long, int> wrapY, long ix, long iy, JxlWeightsSymmetric5 weights)
+    public static float Symmetric5Border(JxlImageF input, Func<long, long, int> wrapY, long ix, long iy, ref JxlWeightsSymmetric5 weights)
     {
         float w0 = weights.GetCVector()[0];
         float w1 = weights.GetRVector()[0];
@@ -99,7 +100,7 @@ internal static class JxlConvolve
         Func<long, long, int> wrapY,
         int rix,
         long iy,
-        JxlWeightsSymmetric5 weights,
+        ref JxlWeightsSymmetric5 weights,
         Span<float> rowOut)
     {
         Vector<float> w0 = LoadDuplicate128(weights.GetCVector());  // c
@@ -126,7 +127,7 @@ internal static class JxlConvolve
         Func<long, long, int> wrapY,
         in Rectangle rect,
         long iy,
-        JxlWeightsSymmetric5 weights,
+        ref JxlWeightsSymmetric5 weights,
         Span<float> rowOut)
     {
         const int radius = 2;
@@ -140,25 +141,25 @@ internal static class JxlConvolve
 
         for (; ix < Math.Min(alignedX, xEnd); ix++, rix++)
         {
-            rowOut[rix] = Symmetric5Border(image, wrapY, ix, iy, weights);
+            rowOut[rix] = Symmetric5Border(image, wrapY, ix, iy, ref weights);
         }
 
         for (; ix + n + radius <= xEnd; ix += n, rix += n)
         {
-            Symmetric5Interior(image, ix, wrapY, rix, iy, weights, rowOut);
+            Symmetric5Interior(image, ix, wrapY, rix, iy, ref weights, rowOut);
         }
 
         for (; ix < xEnd; ix++, rix++)
         {
-            rowOut[rix] = Symmetric5Border(image, wrapY, ix, iy, weights);
+            rowOut[rix] = Symmetric5Border(image, wrapY, ix, iy, ref weights);
         }
     }
 
     public static bool Symmetric5(
-        JxlImageF input,
+        JxlPlane<float> input,
         in Rectangle rectangle,
-        JxlWeightsSymmetric5 weights,
-        JxlImageF output,
+        ref JxlWeightsSymmetric5 weights,
+        JxlPlane<float> output,
         Rectangle outputRect)
     {
         if (rectangle.Width != outputRect.Width || rectangle.Height != outputRect.Height)

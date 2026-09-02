@@ -94,6 +94,12 @@ internal class JxlImage3<T> : IDisposable
         DebugGuard.MustBeLessThan(y, this.YSize, nameof(y));
     }
 
+    /// <summary>
+    /// Returns the rectangle for this image bounds.
+    /// </summary>
+    /// <returns>A rectangle with x,y=0,0 width,height=XSize,YSize.</returns>
+    public Rectangle GetRectangle() => new(0, 0, this.XSize, this.YSize);
+
     public void Dispose()
     {
         foreach (JxlPlane<T> plane in this.planes)

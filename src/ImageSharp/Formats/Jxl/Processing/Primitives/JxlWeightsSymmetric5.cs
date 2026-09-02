@@ -6,89 +6,98 @@ using System.Runtime.Intrinsics;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Primitives;
 
-internal sealed class JxlWeightsSymmetric5
+internal struct JxlWeightsSymmetric5
 {
-    private InlineArray4<float> c;
+    public InlineArray4<float> C;
 
-    private InlineArray4<float> r;
+    public InlineArray4<float> R;
 
-    private InlineArray4<float> r2;
+    public InlineArray4<float> R2;
 
-    private InlineArray4<float> d;
+    public InlineArray4<float> D;
 
-    private InlineArray4<float> d2;
+    public InlineArray4<float> D2;
 
-    private InlineArray4<float> l;
+    public InlineArray4<float> L;
 
-    public Vector128<float> GetCVector()
+    public static InlineArray4<float> CreateVector4(float x)
     {
-        ref float first = ref Unsafe.AsRef(in this.c[0]);
+        InlineArray4<float> array = default;
+
+        array[0] = array[1] = array[2] = array[3] = x;
+
+        return array;
+    }
+
+    public readonly Vector128<float> GetCVector()
+    {
+        ref float first = ref Unsafe.AsRef(in this.C[0]);
         return Vector128.LoadUnsafe(ref first);
     }
 
-    public Vector128<float> GetRVector()
+    public readonly Vector128<float> GetRVector()
     {
-        ref float first = ref Unsafe.AsRef(in this.r[0]);
+        ref float first = ref Unsafe.AsRef(in this.R[0]);
         return Vector128.LoadUnsafe(ref first);
     }
 
-    public Vector128<float> GetR2Vector()
+    public readonly Vector128<float> GetR2Vector()
     {
-        ref float first = ref Unsafe.AsRef(in this.r2[0]);
+        ref float first = ref Unsafe.AsRef(in this.R2[0]);
         return Vector128.LoadUnsafe(ref first);
     }
 
-    public Vector128<float> GetDVector()
+    public readonly Vector128<float> GetDVector()
     {
-        ref float first = ref Unsafe.AsRef(in this.d[0]);
+        ref float first = ref Unsafe.AsRef(in this.D[0]);
         return Vector128.LoadUnsafe(ref first);
     }
 
-    public Vector128<float> GetD2Vector()
+    public readonly Vector128<float> GetD2Vector()
     {
-        ref float first = ref Unsafe.AsRef(in this.d2[0]);
+        ref float first = ref Unsafe.AsRef(in this.D2[0]);
         return Vector128.LoadUnsafe(ref first);
     }
 
-    public Vector128<float> GetLVector()
+    public readonly Vector128<float> GetLVector()
     {
-        ref float first = ref Unsafe.AsRef(in this.l[0]);
+        ref float first = ref Unsafe.AsRef(in this.L[0]);
         return Vector128.LoadUnsafe(ref first);
     }
 
-    public void SetC(Vector128<float> vec)
+    public readonly void SetC(Vector128<float> vec)
     {
-        ref float first = ref Unsafe.AsRef(in this.c[0]);
+        ref float first = ref Unsafe.AsRef(in this.C[0]);
         vec.StoreUnsafe(ref first);
     }
 
-    public void SetD(Vector128<float> vec)
+    public readonly void SetD(Vector128<float> vec)
     {
-        ref float first = ref Unsafe.AsRef(in this.d[0]);
+        ref float first = ref Unsafe.AsRef(in this.D[0]);
         vec.StoreUnsafe(ref first);
     }
 
-    public void SetD2(Vector128<float> vec)
+    public readonly void SetD2(Vector128<float> vec)
     {
-        ref float first = ref Unsafe.AsRef(in this.d2[0]);
+        ref float first = ref Unsafe.AsRef(in this.D2[0]);
         vec.StoreUnsafe(ref first);
     }
 
-    public void SetR(Vector128<float> vec)
+    public readonly void SetR(Vector128<float> vec)
     {
-        ref float first = ref Unsafe.AsRef(in this.r[0]);
+        ref float first = ref Unsafe.AsRef(in this.R[0]);
         vec.StoreUnsafe(ref first);
     }
 
-    public void SetR2(Vector128<float> vec)
+    public readonly void SetR2(Vector128<float> vec)
     {
-        ref float first = ref Unsafe.AsRef(in this.r2[0]);
+        ref float first = ref Unsafe.AsRef(in this.R2[0]);
         vec.StoreUnsafe(ref first);
     }
 
-    public void SetL(Vector128<float> vec)
+    public readonly void SetL(Vector128<float> vec)
     {
-        ref float first = ref Unsafe.AsRef(in this.l[0]);
+        ref float first = ref Unsafe.AsRef(in this.L[0]);
         vec.StoreUnsafe(ref first);
     }
 }
