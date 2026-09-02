@@ -363,11 +363,6 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
     /// </summary>
     private readonly JxlBoxContentDecoder? boxContentDecoder;
 
-    /// <summary>
-    /// Decodes JPEG XL to JPEG.
-    /// </summary>
-    private JxlToJpegDecoder? jpegDecoder;
-
     private readonly JxlBoxContentDecoder? metadataDecoder;
 
     /// <summary>
@@ -2246,12 +2241,12 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
 
                 if (this.reconstructionExifSize > 0)
                 {
-                    JxlToJpegDecoder.SetExif(this.exifMetadata!.Memory, jpegData);
+                    JxlToJpegDecoder.TrySetExif(this.exifMetadata!.Memory.Span, jpegData);
                 }
 
                 if (this.reconstructionXmpSize > 0)
                 {
-                    JxlToJpegDecoder.SetXmp(this.xmpMetadata!.Memory, jpegData);
+                    JxlToJpegDecoder.TrySetXmp(this.xmpMetadata!.Memory.Span, jpegData);
                 }
 
                 this.reconstructionOutputJpeg = JpegReconstructionStage.Output;
@@ -2592,7 +2587,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                             throw new InvalidOperationException("Only one EXIF marker for JPEG reconstruction can be present");
                         }
 
-                        if (JxlToJpegDecoder.ExifBoxContentSize(jpegData, ref this.reconstructionExifSize) != Success)
+                        if (!JxlToJpegDecoder.ExifBoxContentSize(jpegData, ref this.reconstructionExifSize))
                         {
                             throw new InvalidOperationException("Invalid jbrd EXIF size");
                         }
@@ -2605,7 +2600,7 @@ internal sealed class JxlDecoderCore : ImageDecoderCore, IDisposable
                             throw new InvalidOperationException("Only one XMP marker for JPEG reconstruction can be present");
                         }
 
-                        if (JxlToJpegDecoder.XmlBoxContentSize(jpegData, ref this.reconstructionXmpSize) != Success)
+                        if (!JxlToJpegDecoder.XmpBoxContentSize(jpegData, ref this.reconstructionXmpSize))
                         {
                             throw new InvalidOperationException("Invalid jbrd XMP size");
                         }
