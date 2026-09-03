@@ -11,5 +11,5 @@ internal sealed class JxlNoiseParameters
 
     public bool ContainsAny => this.Lookup.Any(x => MathF.Abs(x) > 1e-3f);
 
-    public void Clear() => Array.Fill(this.Lookup, 0f);
+    public void Clear() => this.Lookup.AsSpan().Clear();
 }
