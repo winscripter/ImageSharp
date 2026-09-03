@@ -1,6 +1,7 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -100,5 +101,12 @@ internal static partial class JxlSimdUtils
                 }
             }
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector<float> Pow(Vector<float> @base, Vector<float> exponent)
+    {
+        Vector<float> vec = Vector.Log2(@base) * exponent;
+        return vec * vec;
     }
 }
