@@ -22,23 +22,20 @@ internal sealed class JxlAlphaHelper
         bool alphaIsPremultiplied,
         bool clamp)
     {
-        // Store all channels from all parameters into spans, because
-        // creating a Span<T> from Memory<T> is expensive, especially
-        // in a loop.
-        ReadOnlySpan<float> fgR = foreground.R.Span;
-        ReadOnlySpan<float> fgG = foreground.G.Span;
-        ReadOnlySpan<float> fgB = foreground.B.Span;
-        ReadOnlySpan<float> fgA = foreground.A.Span;
+        ReadOnlySpan<float> fgR = foreground.R;
+        ReadOnlySpan<float> fgG = foreground.G;
+        ReadOnlySpan<float> fgB = foreground.B;
+        ReadOnlySpan<float> fgA = foreground.A;
 
-        ReadOnlySpan<float> bgR = background.R.Span;
-        ReadOnlySpan<float> bgG = background.G.Span;
-        ReadOnlySpan<float> bgB = background.B.Span;
-        ReadOnlySpan<float> bgA = background.A.Span;
+        ReadOnlySpan<float> bgR = background.R;
+        ReadOnlySpan<float> bgG = background.G;
+        ReadOnlySpan<float> bgB = background.B;
+        ReadOnlySpan<float> bgA = background.A;
 
-        Span<float> outR = output.R.Span;
-        Span<float> outG = output.G.Span;
-        Span<float> outB = output.B.Span;
-        Span<float> outA = output.A.Span;
+        Span<float> outR = output.R;
+        Span<float> outG = output.G;
+        Span<float> outB = output.B;
+        Span<float> outA = output.A;
 
         if (alphaIsPremultiplied)
         {
