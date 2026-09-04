@@ -24,6 +24,15 @@ internal static class JxlImageOperations
     public static bool SameSize(JxlPlaneBase a, JxlPlaneBase b) => a.XSize == b.XSize && a.YSize == b.YSize;
 
     /// <summary>
+    /// Returns true if first image has same width and height as the second image.
+    /// </summary>
+    /// <param name="a">First image</param>
+    /// <param name="b">Second image</param>
+    /// <returns>True if width and height is equal.</returns>
+    public static bool SameSize<T>(JxlImage3<T> a, JxlImage3<T> b)
+        where T : unmanaged => a.XSize == b.XSize && a.YSize == b.YSize;
+
+    /// <summary>
     /// Copies everything from one plane to another.
     /// </summary>
     /// <typeparam name="T">The type of planes to copy.</typeparam>

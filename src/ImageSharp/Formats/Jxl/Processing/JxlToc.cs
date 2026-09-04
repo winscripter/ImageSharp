@@ -31,6 +31,7 @@ internal static class JxlToc
     }
 
     private const int BitsPerByte = 8;
+
     private const int MaxTocEntries = 65536;
 
     public static bool ReadToc(
@@ -98,10 +99,7 @@ internal static class JxlToc
             }
         }
 
-        if (!reader.JumpToByteBoundary())
-        {
-            return false;
-        }
+        reader.JumpToByteBoundary();
 
         if (!CheckBitBudget(tocEntries))
         {
@@ -113,10 +111,7 @@ internal static class JxlToc
             sizes[i] = JxlU32Coder.Read(TocDistribution, reader);
         }
 
-        if (!reader.JumpToByteBoundary())
-        {
-            return false;
-        }
+        reader.JumpToByteBoundary();
 
         return CheckBitBudget(0);
     }
