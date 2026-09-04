@@ -3,6 +3,7 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Dct;
 
@@ -49,4 +50,22 @@ internal ref struct JxlDctOutput(Span<float> data, int stride)
     /// <param name="index">The offset.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void StorePart(Vector<float> value, int row, int index) => value.CopyTo(this.Address(row, index));
+
+    /// <summary>
+    /// Stores the vector into the data at the specified row and offset.
+    /// </summary>
+    /// <param name="value">The vector to write.</param>
+    /// <param name="row">The row index.</param>
+    /// <param name="index">The offset.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void StorePart256(Vector256<float> value, int row, int index) => value.CopyTo(this.Address(row, index));
+
+    /// <summary>
+    /// Stores the vector into the data at the specified row and offset.
+    /// </summary>
+    /// <param name="value">The vector to write.</param>
+    /// <param name="row">The row index.</param>
+    /// <param name="index">The offset.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void StorePart128(Vector128<float> value, int row, int index) => value.CopyTo(this.Address(row, index));
 }

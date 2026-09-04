@@ -1,4 +1,4 @@
-﻿// Copyright (c) Six Labors.
+// Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
 using System.Diagnostics;
@@ -69,6 +69,43 @@ internal static partial class SimdUtils
 
         val_2p23_f32 = (v + val_2p23_f32) - val_2p23_f32;
         return val_2p23_f32 | sign;
+    }
+
+    /// <summary>
+    /// Estimates the reciprocal of this vector.
+    /// </summary>
+    /// <param name="v">The vector to get reciprocal estimate of.</param>
+    /// <returns>An estimated reciprocal of each element in the vector.</returns>
+    internal static Vector<float> ReciprocalEstimate(this Vector<float> v)
+    {
+        // TODO: System.Runtime.Intrinsics.Arm has Sve and Sve2
+        // support but is for evaluation purposes only; add SVE/SVE2
+        // support when possible
+        if (Avx512F.IsSupported && Vector<float>.Count == 16)
+        {
+            // x86
+            return Avx512F.Reciprocal14(v.AsVector512()).AsVector();
+        }
+        else if (Avx.IsSupported && Vector<float>.Count == 8)
+        {
+            // x86
+            return Avx.Reciprocal(v.AsVector256()).AsVector();
+        }
+        else if (AdvSimd.IsSupported && Vector<float>.Count == 4)
+        {
+            // ARM
+            return AdvSimd.ReciprocalEstimate(v.AsVector128()).AsVector();
+        }
+        else if (Sse.IsSupported && Vector<float>.Count == 4)
+        {
+            // x86
+            return Sse.Reciprocal(v.AsVector128()).AsVector();
+        }
+        else
+        {
+            // Exact reciprocal fallback (slower)
+            return Vector<float>.One / v;
+        }
     }
 
     [Conditional("DEBUG")]

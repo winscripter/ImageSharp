@@ -3,13 +3,13 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Blending;
 
-internal sealed class JxlAlphaBlendingInputLayer
+internal ref struct JxlAlphaBlendingInputLayer(ReadOnlySpan<float> singleSpan)
 {
-    public ReadOnlyMemory<float> R { get; set; }
+    public ReadOnlySpan<float> R = singleSpan;
 
-    public ReadOnlyMemory<float> G { get; set; }
+    public ReadOnlySpan<float> G = singleSpan;
 
-    public ReadOnlyMemory<float> B { get; set; }
+    public ReadOnlySpan<float> B = singleSpan;
 
-    public ReadOnlyMemory<float> A { get; set; }
+    public ReadOnlySpan<float> A = singleSpan;
 }

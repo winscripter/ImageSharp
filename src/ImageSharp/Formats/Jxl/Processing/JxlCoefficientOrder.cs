@@ -50,7 +50,7 @@ internal static class JxlCoefficientOrder
         return Math.Min(token, PermutationContexts - 1u);
     }
 
-    public static bool ReadPermutation(int skip, int size, Span<int> order, JxlBitReader bitReader, JxlAnsSymbolReader reader, Span<byte> contextMap)
+    public static bool ReadPermutation(int skip, int size, Span<uint> order, JxlBitReader bitReader, JxlAnsSymbolReader reader, Span<byte> contextMap)
     {
         DebugGuard.MustBeLessThanOrEqualTo(size, 65536, nameof(size));
 

@@ -15,10 +15,12 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing;
 internal static partial class JxlSimdUtils
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector256<int> ConcatLowerLower(Vector256<int> a, Vector256<int> b) => Vector256.Create(a.GetLower(), b.GetLower());
+    public static Vector256<T> ConcatLowerLower<T>(Vector256<T> a, Vector256<T> b)
+        where T : unmanaged => Vector256.Create(a.GetLower(), b.GetLower());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector256<int> ConcatUpperUpper(Vector256<int> a, Vector256<int> b) => Vector256.Create(a.GetUpper(), b.GetUpper());
+    public static Vector256<T> ConcatUpperUpper<T>(Vector256<T> a, Vector256<T> b)
+        where T : unmanaged => Vector256.Create(a.GetUpper(), b.GetUpper());
 
     public static void Transpose8x8Block(Span<int> fromSpan, Span<int> toSpan, int stride)
     {
@@ -108,5 +110,331 @@ internal static partial class JxlSimdUtils
     {
         Vector<float> vec = Vector.Log2(@base) * exponent;
         return vec * vec;
+    }
+
+    /// <summary>
+    ///   <para>
+    ///     Fills the span so its first value is equal to <paramref name="start"/>
+    ///     and subsequent values increment by one. For example, with start=5,
+    ///     the span's values will be:
+    ///     <code>
+    ///       { start, start+1, start+2, start+3, start+4, ... to the end of the span }
+    ///     </code>
+    ///   </para>
+    ///   <para>
+    ///     or, more precisely:
+    ///     <code>
+    ///       { 5, 6, 7, 8, 9, 10, 11, ... to the end of the span }
+    ///     </code>
+    ///   </para>
+    ///   <seealso href="https://en.cppreference.com/cpp/algorithm/iota" />
+    /// </summary>
+    /// <param name="span">The span where the values are filled.</param>
+    /// <param name="start">Initial value.</param>
+    public static void Iota(Span<int> span, int start)
+    {
+        ref int spanRef = ref MemoryMarshal.GetReference(span);
+
+        // Using fixed-size vectors so we can construct an
+        // incrementMask more easily.
+        if (Vector512.IsHardwareAccelerated)
+        {
+            Vector512<int> incrementMask = Vector512.Create(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+            Vector512<int> v = Vector512.Create(start) + (incrementMask - Vector512<int>.One);
+
+            if ((span.Length % Vector512<int>.Count) == 0)
+            {
+                // Aligned length
+                for (int i = 0; i < span.Length; i += Vector512<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+            }
+            else
+            {
+                // We will need a scalar remainder
+                int vectorLength = span.Length - (span.Length % Vector512<int>.Count);
+
+                int i;
+                for (i = 0; i < vectorLength; i += Vector512<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+
+                int val = v.ToScalar();
+                for (; i < span.Length; i++)
+                {
+                    Unsafe.Add(ref spanRef, i) = val++;
+                }
+            }
+        }
+        else if (Vector256.IsHardwareAccelerated)
+        {
+            Vector256<int> incrementMask = Vector256.Create(1, 2, 3, 4, 5, 6, 7, 8);
+            Vector256<int> v = Vector256.Create(start) + (incrementMask - Vector256<int>.One);
+
+            if ((span.Length % Vector256<int>.Count) == 0)
+            {
+                // Aligned length
+                for (int i = 0; i < span.Length; i += Vector256<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+            }
+            else
+            {
+                // We will need a scalar remainder
+                int vectorLength = span.Length - (span.Length % Vector256<int>.Count);
+
+                int i;
+                for (i = 0; i < vectorLength; i += Vector256<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+
+                int val = v.ToScalar();
+                for (; i < span.Length; i++)
+                {
+                    Unsafe.Add(ref spanRef, i) = val++;
+                }
+            }
+        }
+        else if (Vector128.IsHardwareAccelerated)
+        {
+            Vector128<int> incrementMask = Vector128.Create(1, 2, 3, 4);
+            Vector128<int> v = Vector128.Create(start) + (incrementMask - Vector128<int>.One);
+
+            if ((span.Length % Vector128<int>.Count) == 0)
+            {
+                // Aligned length
+                for (int i = 0; i < span.Length; i += Vector128<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+            }
+            else
+            {
+                // We will need a scalar remainder
+                int vectorLength = span.Length - (span.Length % Vector128<int>.Count);
+
+                int i;
+                for (i = 0; i < vectorLength; i += Vector128<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+
+                int val = v.ToScalar();
+                for (; i < span.Length; i++)
+                {
+                    Unsafe.Add(ref spanRef, i) = val++;
+                }
+            }
+        }
+        else if (Vector64.IsHardwareAccelerated)
+        {
+            Vector64<int> incrementMask = Vector64.Create(1, 2);
+            Vector64<int> v = Vector64.Create(start) + (incrementMask - Vector64<int>.One);
+
+            if ((span.Length % Vector64<int>.Count) == 0)
+            {
+                // Aligned length
+                for (int i = 0; i < span.Length; i += Vector64<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+            }
+            else
+            {
+                // We will need a scalar remainder
+                int vectorLength = span.Length - (span.Length % Vector64<int>.Count);
+
+                int i;
+                for (i = 0; i < vectorLength; i += Vector64<int>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+
+                int val = v.ToScalar();
+                for (; i < span.Length; i++)
+                {
+                    Unsafe.Add(ref spanRef, i) = val++;
+                }
+            }
+        }
+        else
+        {
+            // No SIMD
+            int value = start;
+            spanRef = value;
+            value++;
+            for (int i = 1; i < span.Length; i++)
+            {
+                Unsafe.Add(ref spanRef, i) = value++;
+            }
+        }
+    }
+
+    /// <summary>
+    ///   <para>
+    ///     Fills the span so its first value is equal to <paramref name="start"/>
+    ///     and subsequent values increment by one. For example, with start=5,
+    ///     the span's values will be:
+    ///     <code>
+    ///       { start, start+1, start+2, start+3, start+4, ... to the end of the span }
+    ///     </code>
+    ///   </para>
+    ///   <para>
+    ///     or, more precisely:
+    ///     <code>
+    ///       { 5, 6, 7, 8, 9, 10, 11, ... to the end of the span }
+    ///     </code>
+    ///   </para>
+    ///   <seealso href="https://en.cppreference.com/cpp/algorithm/iota" />
+    /// </summary>
+    /// <param name="span">The span where the values are filled.</param>
+    /// <param name="start">Initial value.</param>
+    public static void Iota<T>(Span<T> span, T start)
+        where T : unmanaged, INumber<T>
+    {
+        // Slightly slower than the int variant
+        ref T spanRef = ref MemoryMarshal.GetReference(span);
+
+        if (Vector<T>.IsSupported && Vector.IsHardwareAccelerated)
+        {
+            Vector<T> incrementMask = IotaMask<T>.IncrementMask;
+            Vector<T> v = Vector.Create(start) + (incrementMask - Vector<T>.One);
+
+            if ((span.Length % Vector<T>.Count) == 0)
+            {
+                // Aligned length
+                for (int i = 0; i < span.Length; i += Vector<T>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+            }
+            else
+            {
+                // Remainder needed
+                int vectorLength = span.Length - (span.Length % Vector<T>.Count);
+
+                int i;
+                for (i = 0; i < vectorLength; i += Vector<T>.Count)
+                {
+                    v.StoreUnsafe(ref Unsafe.Add(ref spanRef, i));
+                    v += incrementMask;
+                }
+
+                T val = v.ToScalar();
+                for (; i < span.Length; i++)
+                {
+                    Unsafe.Add(ref spanRef, i) = val++;
+                }
+            }
+        }
+        else
+        {
+            // Scalar (slow)
+            T value = start;
+            spanRef = value;
+            value++;
+            for (int i = 1; i < span.Length; i++)
+            {
+                Unsafe.Add(ref spanRef, i) = value++;
+            }
+        }
+    }
+
+    public static Vector<T> Iota<T>(T start)
+        where T : unmanaged, INumber<T>
+        => IotaMask<T>.IncrementMask + Vector.Create(start);
+
+    /// <summary>
+    /// Vectorized floating-point error function (precise approximate).
+    /// </summary>
+    /// <param name="x">Vector to compute error of.</param>
+    /// <returns>Vector whose each item is an error (similar to std::erf).</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector<float> FastErff(Vector<float> x)
+    {
+        Vector<float> zero = Vector<float>.Zero;
+        Vector<float> one = Vector<float>.One;
+
+        Vector<int> xle0 = Vector.LessThanOrEqual(x, zero);
+        Vector<float> absx = Vector.Abs(x);
+
+        Vector<float> denom1 = (absx * new Vector<float>(0.0777394369f)) + new Vector<float>(0.000205260015f);
+        Vector<float> denom2 = (denom1 * absx) + new Vector<float>(0.232120216f);
+        Vector<float> denom3 = (denom2 * absx) + new Vector<float>(0.277820801f);
+        Vector<float> denom4 = (denom3 * absx) + one;
+        Vector<float> denom5 = denom4 * denom4;
+        Vector<float> invDenom5 = one / denom5;
+        Vector<float> result = one - Vector.Multiply(invDenom5, invDenom5);
+
+        // Change sign if x <= 0.
+        return Vector.ConditionalSelect(xle0, -result, result);
+    }
+
+    /// <summary>
+    /// Scalar floating-point error function (precise approximate).
+    /// </summary>
+    /// <param name="x">Value to compute error of.</param>
+    /// <returns>A scalar error value (similar to std::erf).</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float FastErff(float x)
+    {
+        float zero = 0.0f;
+        float one = 1.0f;
+
+        bool xle0 = x <= zero;
+        float absx = MathF.Abs(x);
+
+        float denom1 = (absx * 0.0777394369f) + 0.000205260015f;
+        float denom2 = (denom1 * absx) + 0.232120216f;
+        float denom3 = (denom2 * absx) + 0.277820801f;
+        float denom4 = (denom3 * absx) + one;
+        float denom5 = denom4 * denom4;
+        float invDenom5 = one / denom5;
+        float result = one - (invDenom5 * invDenom5);
+
+        // Change sign if x <= 0.
+        return xle0 ? -result : result;
+    }
+
+    /// <summary>
+    /// Incrementing values to compute the Iota function.
+    /// </summary>
+    /// <remarks>
+    /// Creating a Vector&lt;T&gt; incrementing values would be
+    /// slow as Vector&lt;T&gt; is not a fixed-size vector, leaving
+    /// no other option but a slow loop. This class caches these
+    /// vectors for significantly better performance, though still
+    /// not as fast as an int variant.
+    /// </remarks>
+    /// <typeparam name="T">Type of the vector.</typeparam>
+    private static class IotaMask<T>
+        where T : unmanaged, INumber<T>
+    {
+        public static readonly Vector<T> IncrementMask;
+
+        static IotaMask()
+        {
+            Span<T> values = stackalloc T[Vector<T>.Count];
+
+            for (int i = 0; i < Vector<T>.Count; i++)
+            {
+                values[i] = T.CreateSaturating(i + 1);
+            }
+
+            IncrementMask = Vector.Create<T>(values);
+        }
     }
 }

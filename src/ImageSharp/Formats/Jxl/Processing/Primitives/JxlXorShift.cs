@@ -12,7 +12,7 @@ internal sealed class JxlXorShift
     private readonly ulong[] s0 = new ulong[8];
     private readonly ulong[] s1 = new ulong[8];
 
-    public void XorShift128Plus(ulong seed)
+    public JxlXorShift(ulong seed)
     {
         this.s0[0] = SplitMix64(seed + 0x9E3779B97F4A7C15L);
         this.s1[0] = SplitMix64(this.s0[0]);

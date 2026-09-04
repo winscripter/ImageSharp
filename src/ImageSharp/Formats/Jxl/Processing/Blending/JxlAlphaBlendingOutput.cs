@@ -3,13 +3,13 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Blending;
 
-internal sealed class JxlAlphaBlendingOutput
+internal ref struct JxlAlphaBlendingOutput(Span<float> singleSpan)
 {
-    public Memory<float> R { get; set; }
+    public Span<float> R = singleSpan;
 
-    public Memory<float> G { get; set; }
+    public Span<float> G = singleSpan;
 
-    public Memory<float> B { get; set; }
+    public Span<float> B = singleSpan;
 
-    public Memory<float> A { get; set; }
+    public Span<float> A = singleSpan;
 }

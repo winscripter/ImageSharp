@@ -1,6 +1,8 @@
 // Copyright (c) Six Labors.
 // Licensed under the Six Labors Split License.
 
+using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Memory;
@@ -9,6 +11,21 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Memory;
 internal class JxlImage3<T> : IDisposable
     where T : unmanaged
 {
+    private sealed class TypeChangingMemoryManager<TTarget>(Memory<byte> memory) : MemoryManager<TTarget>
+        where TTarget : unmanaged
+    {
+        public override Span<TTarget> GetSpan() => MemoryMarshal.Cast<byte, TTarget>(memory.Span);
+
+        // we don't use these
+        public override MemoryHandle Pin(int elementIndex = 0) => throw new NotImplementedException();
+
+        public override void Unpin() => throw new NotImplementedException();
+
+        protected override void Dispose(bool disposing)
+        {
+        }
+    }
+
     private const int PlaneCount = 3;
 
     private JxlPlane<T>[] planes = new JxlPlane<T>[3];
@@ -44,6 +61,22 @@ internal class JxlImage3<T> : IDisposable
         Span<T> rowSpan = MemoryMarshal.Cast<byte, T>(this.planes[plane].BytesSpan[rowOffset..]);
 
         return rowSpan;
+    }
+
+    // This method performs minor allocations!
+    public Memory<T> PlaneRowMemory(int plane, int row)
+    {
+        this.PlaneRowBoundsCheck(plane, row);
+
+        int rowOffset = row * this.planes[0].BytesPerRow;
+        Memory<byte> rowMemoryBytes = this.planes[plane].Bytes[rowOffset..];
+
+        // we have to allocate a utility class so we can reinterpret
+        // a Memory<T>.
+        // Unsafe.As is truly unsafe because, f.e. what if there are
+        // 400 bytes but T is 4 bytes? the length will remain as 400.
+        TypeChangingMemoryManager<T> reinterpreter = new(rowMemoryBytes);
+        return reinterpreter.Memory;
     }
 
     public Span<T> PlaneRow(Rectangle rectangle, int c, int y)

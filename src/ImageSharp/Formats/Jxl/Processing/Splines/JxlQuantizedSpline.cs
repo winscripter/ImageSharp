@@ -224,7 +224,7 @@ internal sealed class JxlQuantizedSpline : IDisposable
 
         for (int i = 0; i < 32; i++)
         {
-            float inverseDctFactor = (i == 0) ? Sqrt05 : 1.0f;
+            float inverseDctFactor = (i == 0) ? JxlDctScales.Sqrt05 : 1.0f;
             result.SigmaDct[i] = this.SigmaDct[i] * inverseDctFactor * ChannelWeight[3] * inverseQuant;
             float weightF = MathF.Ceiling(inverseQuant * MathF.Abs(this.SigmaDct[i]));
             long weight = (long)Math.Min(weightLimit, Math.Max(1.0f, weightF));
@@ -240,7 +240,7 @@ internal sealed class JxlQuantizedSpline : IDisposable
         return true;
     }
 
-    public bool Decode(
+    public bool TryDecode(
         Configuration configuration,
         Span<byte> contextMap,
         JxlAnsSymbolReader decoder,

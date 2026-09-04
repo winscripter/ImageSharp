@@ -563,4 +563,44 @@ internal static class Vector256_
 
         return (shuffledA & maskA) | (shuffledB & maskB);
     }
+
+    /// <summary>
+    /// Interleaves the lower half of the vector.
+    /// </summary>
+    /// <param name="a">First vector</param>
+    /// <param name="b">Second vector</param>
+    /// <returns>
+    ///   <c>{ a[0], b[0], a[1], b[1], a[2], b[2], a[3], b[3] }</c>
+    /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector256<float> InterleaveLower(Vector256<float> a, Vector256<float> b)
+    {
+        Vector256<float> shuffledA = Vector256.Shuffle(a, Vector256.Create(0, 0, 1, 1, 2, 2, 3, 3));
+        Vector256<float> shuffledB = Vector256.Shuffle(b, Vector256.Create(0, 0, 1, 1, 2, 2, 3, 3));
+
+        Vector256<float> maskA = Vector256.Create(-1, 0, -1, 0, -1, 0, -1, 0).AsSingle();
+        Vector256<float> maskB = Vector256.Create(0, -1, 0, -1, 0, -1, 0, -1).AsSingle();
+
+        return (shuffledA & maskA) | (shuffledB & maskB);
+    }
+
+    /// <summary>
+    /// Interleaves the upper half of the vector.
+    /// </summary>
+    /// <param name="a">First vector</param>
+    /// <param name="b">Second vector</param>
+    /// <returns>
+    ///   <c>{ a[4], b[4], a[5], b[5], a[6], b[6], a[7], b[7] }</c>
+    /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector256<float> InterleaveUpper(Vector256<float> a, Vector256<float> b)
+    {
+        Vector256<float> shuffledA = Vector256.Shuffle(a, Vector256.Create(4, 4, 5, 5, 6, 6, 7, 7));
+        Vector256<float> shuffledB = Vector256.Shuffle(b, Vector256.Create(4, 4, 5, 5, 6, 6, 7, 7));
+
+        Vector256<float> maskA = Vector256.Create(-1, 0, -1, 0, -1, 0, -1, 0).AsSingle();
+        Vector256<float> maskB = Vector256.Create(0, -1, 0, -1, 0, -1, 0, -1).AsSingle();
+
+        return (shuffledA & maskA) | (shuffledB & maskB);
+    }
 }

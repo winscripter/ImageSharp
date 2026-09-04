@@ -11,9 +11,9 @@ internal sealed class JxlSpline : IDisposable
 
     public Memory<PointF> ControlPoints { get; private set; }
 
-    public JxlDct32[] ColorDct { get; set; } = [];
+    public Dct32[] ColorDct { get; set; } = [];
 
-    public JxlDct32 SigmaDct { get; set; }
+    public Dct32 SigmaDct { get; set; }
 
     public void ClearControlPoints()
     {

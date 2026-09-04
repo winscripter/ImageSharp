@@ -6,17 +6,13 @@ using System.Runtime.InteropServices;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.AcStrategy;
 
-internal sealed class JxlAcStrategyRow
+internal readonly struct JxlAcStrategyRow(ReadOnlyMemory<byte> row)
 {
-    private readonly ReadOnlyMemory<byte> row;
-
-    public JxlAcStrategyRow(ReadOnlyMemory<byte> row) => this.row = row;
-
-    public JxlAcStrategy this[int x]
+    public readonly JxlAcStrategy this[int x]
     {
         get
         {
-            ReadOnlySpan<byte> span = this.row.Span;
+            ReadOnlySpan<byte> span = row.Span;
 
             DebugGuard.MustBeLessThan(x * 8, span.Length, "x overflows");
 

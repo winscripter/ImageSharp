@@ -10,16 +10,16 @@ internal static class JxlLehmerCode
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int ValueOfLowest1Bit(int n) => n & -n;
 
-    public static bool ComputeLehmerCode(ReadOnlySpan<int> permutation, Span<uint> temp, int n, Span<uint> code)
+    public static bool ComputeLehmerCode(ReadOnlySpan<uint> permutation, Span<uint> temp, int n, Span<uint> code)
     {
         temp[(n + 1)..].Clear();
 
         for (int idx = 0; idx < n; idx++)
         {
-            int s = permutation[idx];
+            uint s = permutation[idx];
 
             uint penalty = 0u;
-            uint i = (uint)s + 1u;
+            uint i = s + 1u;
 
             while (i != 0u)
             {
@@ -32,8 +32,8 @@ internal static class JxlLehmerCode
                 return false;
             }
 
-            code[idx] = (uint)s - penalty;
-            i = (uint)s + 1u;
+            code[idx] = s - penalty;
+            i = s + 1u;
 
             while (i < n + 1u)
             {
@@ -45,7 +45,7 @@ internal static class JxlLehmerCode
         return true;
     }
 
-    public static bool DecodeLehmerCode(ReadOnlySpan<uint> code, Span<uint> temp, int n, Span<int> permutation)
+    public static bool DecodeLehmerCode(ReadOnlySpan<uint> code, Span<uint> temp, int n, Span<uint> permutation)
     {
         if (n == 0)
         {
@@ -91,7 +91,7 @@ internal static class JxlLehmerCode
                 }
             }
 
-            permutation[i] = next;
+            permutation[i] = unchecked((uint)next);
 
             next++;
             while (next <= paddedN)

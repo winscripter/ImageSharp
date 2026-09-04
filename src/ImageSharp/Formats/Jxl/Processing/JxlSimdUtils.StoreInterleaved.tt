@@ -33,10 +33,11 @@ internal static partial class JxlSimdUtils
             }
             string inlineParameters = string.Join(", ", vectorParameters) + ", ";
 #>
-    public static void StoreInterleaved<T>(<#= inlineParameters #>ref T memory)
+    public static unsafe void StoreInterleaved<T>(<#= inlineParameters #>ref T memory)
+        where T : unmanaged
     {
 <# for (int j = 0; j < i; j++) { #>
-        v<#= j + 1 #>.StoreUnsafe(ref Unsafe.Add(ref memory, <#= j #>));
+        v<#= j + 1 #>.StoreUnsafe(ref Unsafe.Add(ref memory, Vector<T>.Count * <#= j #>));
 <# } #>
     }
 
