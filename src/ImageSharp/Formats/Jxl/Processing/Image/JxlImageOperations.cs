@@ -65,6 +65,41 @@ internal static class JxlImageOperations
     }
 
     /// <summary>
+    /// Copies everything from one image to another.
+    /// </summary>
+    /// <typeparam name="T">The type of image to copy.</typeparam>
+    /// <param name="from">Source image (read-only)</param>
+    /// <param name="to">Destination image (write-only)</param>
+    /// <returns>
+    /// Status of the copy operation
+    /// </returns>
+    public static bool CopyImage<T>(JxlImage3<T> from, JxlImage3<T> to)
+        where T : unmanaged
+    {
+        if (!SameSize(from, to))
+        {
+            return false;
+        }
+
+        if (from.XSize == 0 || from.YSize == 0)
+        {
+            return true;
+        }
+
+        for (int c = 0; c < 3; c++)
+        {
+            for (int y = 0; y < from.YSize; y++)
+            {
+                Span<T> rowFrom = from.PlaneRow(c, y);
+                Span<T> rowTo = to.PlaneRow(c, y);
+                rowFrom.CopyTo(rowTo);
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Within bounds specified by input rectangles, copies everything from one plane to another.
     /// </summary>
     /// <typeparam name="T">The type of planes to copy.</typeparam>
