@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Blending;
 
+// TODO: SIMD support
 internal sealed class JxlAlphaHelper
 {
-    // TODO: SIMD support
     private const float SmallAlpha = 1f / (1 << 26);
 
     // Force x to stay within the range of 0 through 1
