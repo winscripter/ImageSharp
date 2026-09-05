@@ -65,6 +65,22 @@ internal class JxlPlane<T> : JxlPlaneBase
     public Span<T> GetRow(int y) => this.GetRowBase<T>(y);
 
     /// <summary>
+    /// Returns a span for the specified row, but backwards by specified number of elements.
+    /// </summary>
+    /// <param name="y">The row index.</param>
+    /// <param name="minus">Once the offset of the row was derived, this is how much to subtract the offset.</param>
+    /// <returns>A span which covers memory for the specified row.</returns>
+    public Span<T> GetRowMinus(int y, int minus) => this.GetRowMinusBase<T>(y, minus);
+
+    /// <summary>
+    /// Returns a span for the specified row, but with offset by specified number of elements.
+    /// </summary>
+    /// <param name="y">The row index.</param>
+    /// <param name="plus">Once the offset of the row was derived, this is the additional offset.</param>
+    /// <returns>A span which covers memory for the specified row.</returns>
+    public Span<T> GetRowPlus(int y, int plus) => this.GetRowMinusBase<T>(y, plus);
+
+    /// <summary>
     /// Returns a span for the specified row within the specified rectangle bounds.
     /// </summary>
     /// <param name="rectangle">The bounds.</param>

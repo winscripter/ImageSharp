@@ -8,6 +8,14 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Quantization;
 /// </summary>
 internal static class JxlQuantizerConstants
 {
+    public const int Log2MaxDistanceBands = 4;
+
+    public const int MaxDistanceBands = 1 + (1 << Log2MaxDistanceBands);
+
+    public const int CeilLog2NumPredefinedTables = 0;
+
+    public const int Log2NumQuantModes = 3;
+
     /// <summary>
     /// Total number of quantization tables.
     /// </summary>

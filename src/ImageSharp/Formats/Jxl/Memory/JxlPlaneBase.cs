@@ -157,6 +157,24 @@ internal class JxlPlaneBase : IDisposable
         return MemoryMarshal.Cast<byte, T>(row);
     }
 
+    protected Span<T> GetRowMinusBase<T>(int y, int minus)
+        where T : unmanaged
+    {
+        DebugGuard.MustBeLessThan(y, this.YSize, nameof(y));
+
+        Span<byte> row = this.Bytes.Span[((y * this.BytesPerRow) - minus)..];
+        return MemoryMarshal.Cast<byte, T>(row);
+    }
+
+    protected Span<T> GetRowPlusBase<T>(int y, int plus)
+        where T : unmanaged
+    {
+        DebugGuard.MustBeLessThan(y, this.YSize, nameof(y));
+
+        Span<byte> row = this.Bytes.Span[((y * this.BytesPerRow) + plus)..];
+        return MemoryMarshal.Cast<byte, T>(row);
+    }
+
     /// <summary>
     /// Swaps properties &amp; data of this image with the specified image.
     /// </summary>

@@ -409,6 +409,102 @@ internal static partial class JxlSimdUtils
         return xle0 ? -result : result;
     }
 
+    // Raises 2 to the power of x
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> FastPow2f(Vector128<float> x)
+    {
+        Vector128<float> floorX = Vector128.Floor(x);
+        Vector128<int> exponent = Vector128.ConvertToInt32(floorX) + Vector128.Create(127);
+
+        Vector128<float> exp = exponent.AsSingle() << 23;
+        Vector128<float> frac = x - floorX;
+        Vector128<float> num = frac + Vector128.Create(1.01749063e+01f);
+
+        num = Vector128.FusedMultiplyAdd(
+            num,
+            frac,
+            Vector128.Create(4.88687798e+01f));
+
+        num = Vector128.FusedMultiplyAdd(
+            num,
+            frac,
+            Vector128.Create(9.85506591e+01f));
+
+        num *= exp;
+
+        Vector128<float> den =
+            Vector128.FusedMultiplyAdd(
+                frac,
+                Vector128.Create(2.10242958e-01f),
+                Vector128.Create(-2.22328856e-02f));
+
+        den = Vector128.FusedMultiplyAdd(
+            den,
+            frac,
+            Vector128.Create(-1.94414990e+01f));
+
+        den = Vector128.FusedMultiplyAdd(
+            den,
+            frac,
+            Vector128.Create(9.85506633e+01f));
+
+        return num / den;
+    }
+
+    // Raises 2 to the power of x
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector<float> FastPow2f(Vector<float> x)
+    {
+        Vector<float> floorX = Vector.Floor(x);
+        Vector<int> exponent = Vector.ConvertToInt32(floorX) + Vector.Create(127);
+
+        Vector<float> exp = exponent.As<int, float>() << 23;
+        Vector<float> frac = x - floorX;
+        Vector<float> num = frac + Vector.Create(1.01749063e+01f);
+
+        num = Vector.FusedMultiplyAdd(
+            num,
+            frac,
+            Vector.Create(4.88687798e+01f));
+
+        num = Vector.FusedMultiplyAdd(
+            num,
+            frac,
+            Vector.Create(9.85506591e+01f));
+
+        num *= exp;
+
+        Vector<float> den =
+            Vector.FusedMultiplyAdd(
+                frac,
+                Vector.Create(2.10242958e-01f),
+                Vector.Create(-2.22328856e-02f));
+
+        den = Vector.FusedMultiplyAdd(
+            den,
+            frac,
+            Vector.Create(-1.94414990e+01f));
+
+        den = Vector.FusedMultiplyAdd(
+            den,
+            frac,
+            Vector.Create(9.85506633e+01f));
+
+        return num / den;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector128<float> FastPowf(
+        Vector128<float> @base,
+        Vector128<float> exponent)
+        => FastPow2f(Vector128.Log2(@base) * exponent);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector<float> FastPowf(
+        Vector<float> @base,
+        Vector<float> exponent)
+        => FastPow2f(Vector.Log2(@base) * exponent);
+
     /// <summary>
     /// Incrementing values to compute the Iota function.
     /// </summary>

@@ -60,9 +60,7 @@ internal static class Butteraugli
     };
 #pragma warning restore
 
-    private static readonly DenseMatrix<float> Heatmap;
-
-    static Butteraugli() => Heatmap = new(HeatmapData);
+    private static readonly DenseMatrix<float> Heatmap = new(HeatmapData);
 
     public static ReadOnlySpan<float> Wmul =>
     [

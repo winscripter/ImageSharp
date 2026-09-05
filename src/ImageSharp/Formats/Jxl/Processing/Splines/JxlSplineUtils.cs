@@ -13,15 +13,17 @@ internal static class JxlSplineUtils
 {
     public const float DesiredRenderingDistance = 1f;
 
+    private const float PiBy32 = MathF.PI / 32;
+
     private static ReadOnlySpan<float> ContinuousIDCTMultipliers =>
     [
-        MathF.PI / 32 * 0,  MathF.PI / 32 * 1,  MathF.PI / 32 * 2,  MathF.PI / 32 * 3,  MathF.PI / 32 * 4,
-        MathF.PI / 32 * 5,  MathF.PI / 32 * 6,  MathF.PI / 32 * 7,  MathF.PI / 32 * 8,  MathF.PI / 32 * 9,
-        MathF.PI / 32 * 10, MathF.PI / 32 * 11, MathF.PI / 32 * 12, MathF.PI / 32 * 13, MathF.PI / 32 * 14,
-        MathF.PI / 32 * 15, MathF.PI / 32 * 16, MathF.PI / 32 * 17, MathF.PI / 32 * 18, MathF.PI / 32 * 19,
-        MathF.PI / 32 * 20, MathF.PI / 32 * 21, MathF.PI / 32 * 22, MathF.PI / 32 * 23, MathF.PI / 32 * 24,
-        MathF.PI / 32 * 25, MathF.PI / 32 * 26, MathF.PI / 32 * 27, MathF.PI / 32 * 28, MathF.PI / 32 * 29,
-        MathF.PI / 32 * 30, MathF.PI / 32 * 31,
+        PiBy32 * 0,  PiBy32 * 1,  PiBy32 * 2,  PiBy32 * 3,  PiBy32 * 4,
+        PiBy32 * 5,  PiBy32 * 6,  PiBy32 * 7,  PiBy32 * 8,  PiBy32 * 9,
+        PiBy32 * 10, PiBy32 * 11, PiBy32 * 12, PiBy32 * 13, PiBy32 * 14,
+        PiBy32 * 15, PiBy32 * 16, PiBy32 * 17, PiBy32 * 18, PiBy32 * 19,
+        PiBy32 * 20, PiBy32 * 21, PiBy32 * 22, PiBy32 * 23, PiBy32 * 24,
+        PiBy32 * 25, PiBy32 * 26, PiBy32 * 27, PiBy32 * 28, PiBy32 * 29,
+        PiBy32 * 30, PiBy32 * 31,
     ];
 
     public static float ContinuousInverseDCT(in Dct32 dct, float t)

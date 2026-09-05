@@ -112,12 +112,12 @@ internal sealed class JxlDequantMatrices
     /// <summary>
     /// Gets a lookup which represents required widths for each quantizer.
     /// </summary>
-    private static ReadOnlySpan<int> RequiredSizeX => [1, 1, 1, 1, 2, 4, 1, 1, 2, 1, 1, 8, 4, 16, 8, 32, 16];
+    public static ReadOnlySpan<int> RequiredSizeX => [1, 1, 1, 1, 2, 4, 1, 1, 2, 1, 1, 8, 4, 16, 8, 32, 16];
 
     /// <summary>
     /// Gets a lookup which represents required heights for each quantizer.
     /// </summary>
-    private static ReadOnlySpan<int> RequiredSizeY => [1, 1, 1, 1, 2, 4, 2, 4, 4, 1, 1, 8, 8, 16, 16, 32, 32];
+    public static ReadOnlySpan<int> RequiredSizeY => [1, 1, 1, 1, 2, 4, 2, 4, 4, 1, 1, 8, 8, 16, 16, 32, 32];
 
     /// <summary>
     /// Returns the default library with quantizer encodings for all transforms

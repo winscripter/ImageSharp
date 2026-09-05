@@ -3,7 +3,7 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Encoding.ContextPrediction;
 
-internal sealed class JxlMaTreeLookup(JxlFlatDecisionNode[] nodes)
+internal sealed class JxlMaTreeLookup(List<JxlFlatDecisionNode> nodes)
 {
     public JxlMaTreeLookupResult Lookup(Span<int> properties)
     {
@@ -12,7 +12,7 @@ internal sealed class JxlMaTreeLookup(JxlFlatDecisionNode[] nodes)
         {
             for (int i = 0; i < 2; i++)
             {
-                JxlFlatDecisionNode node = nodes[pos];
+                JxlFlatDecisionNode node = nodes[(int)pos];
                 if (node.Property0 < 0)
                 {
                     return new(node.ChildID, node.Predictor, node.PredictorOffset, node.Multiplier);

@@ -74,4 +74,8 @@ internal sealed class JxlModularChannel
     }
 
     public Span<int> GetRow(int y) => this.Plane.GetRow(y);
+
+    public Span<int> GetRowMinus(int y, int minus) => this.Plane.GetRowMinus(y, minus);
+
+    public Span<int> GetRowPlus(int y, int plus) => this.Plane.GetRowPlus(y, plus);
 }
