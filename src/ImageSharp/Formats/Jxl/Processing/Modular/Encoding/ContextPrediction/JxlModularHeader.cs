@@ -24,11 +24,6 @@ internal sealed class JxlModularHeader : IJxlFields
     private InlineArray4<uint> w;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JxlModularHeader"/> class.
-    /// </summary>
-    public JxlModularHeader() => JxlBundle.Init(this);
-
-    /// <summary>
     /// Gets or sets a value indicating whether all values are default.
     /// </summary>
     public bool AllDefault

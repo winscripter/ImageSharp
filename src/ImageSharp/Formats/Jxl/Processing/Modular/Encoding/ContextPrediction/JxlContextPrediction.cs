@@ -10,7 +10,7 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Encoding.ContextPr
 /// </summary>
 internal static class JxlContextPrediction
 {
-    private const int ExtraPropertiesPerChannel = 4;
+    public const int ExtraPropertiesPerChannel = 4;
 
     public const int NumberOfProperties = 1;
 

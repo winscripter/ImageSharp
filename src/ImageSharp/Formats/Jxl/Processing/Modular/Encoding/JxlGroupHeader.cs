@@ -12,8 +12,6 @@ internal sealed class JxlGroupHeader : IJxlFields
 {
     private bool useGlobalTree;
 
-    public JxlGroupHeader() => JxlBundle.Init(this);
-
     public bool UseGlobalTree
     {
         get => this.useGlobalTree;
@@ -22,7 +20,7 @@ internal sealed class JxlGroupHeader : IJxlFields
 
     internal JxlModularHeader WeightedHeader { get; set; } = new();
 
-    internal List<JxlTransform> Transforms { get; private set; } = [];
+    internal List<JxlTransform> Transforms { get; set; } = [];
 
     public bool Visit(JxlVisitor visitor)
     {

@@ -14,6 +14,11 @@ internal static class JxlPredictorFacts
     public const int ModularPredictors = (int)JxlPredictor.Average4 + 1;
 
     /// <summary>
+    /// Nearest power of 2 of modular predictors.
+    /// </summary>
+    public const int ModularPredictorsAlignment = 16;
+
+    /// <summary>
     /// Number of modular encoder predictors.
     /// </summary>
     public const int ModularEncoderPredictors = (int)JxlPredictor.Variable + 1;
