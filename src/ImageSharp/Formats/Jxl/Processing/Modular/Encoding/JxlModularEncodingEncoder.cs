@@ -264,11 +264,11 @@ internal static class JxlModularEncodingEncoder
 
         treeSamples.AllSamplesDone();
 
-        JxlMaEncoder.ComputeBestTree(treeSamples, options.SplittingHeuristicsModeThreshold * requiredCost, info, staticPropertyRange, options.FastDecodeMultiplier, tree);
+        JxlMaEncoder.ComputeBestTree(treeSamples, options.SplittingHeuristicsNodeThreshold * requiredCost, info, staticPropertyRange, options.FastDecodeMultiplier, tree);
         return tree;
     }
 
-    public static void EncodeModularChannelMAANS(JxlModularImage image, int channelIndex, JxlModularHeader wpHeader, Tree globalTree, Span<JxlToken> tokens, int groupId, bool skipEncoderFastPath)
+    public static void EncodeModularChannelMAANS(Configuration configuration, JxlModularImage image, int channelIndex, JxlModularHeader wpHeader, Tree globalTree, Span<JxlToken> tokens, int groupId, bool skipEncoderFastPath)
     {
         JxlModularChannel channel = image.Channels[channelIndex];
 
@@ -563,7 +563,7 @@ internal static class JxlModularEncodingEncoder
         throw new InvalidOperationException("Invalid tree type: " + treeKind);
     }
 
-    public static Tree LearnTree(JxlModularImage[] images, Span<JxlModularOptions> options, int start, int stop, List<JxlModularMultiplierInfo>? multiplierInfo = null)
+    public static Tree LearnTree(Configuration configuration, JxlModularImage[] images, Span<JxlModularOptions> options, int start, int stop, List<JxlModularMultiplierInfo>? multiplierInfo = null)
     {
         multiplierInfo ??= [];
 
@@ -581,7 +581,7 @@ internal static class JxlModularEncodingEncoder
         for (int i = start; i < stop; i++)
         {
             maxC = Math.Max(images[i].Channels.Count, maxC);
-            JxlMaEncoder.CollectPixelSamples(images[i], options[i], i, groupPixelCount, channelPixelCount, pixelSamples, diffSamples);
+            JxlMaEncoder.CollectPixelSamples(configuration, images[i], options[i], i, groupPixelCount, channelPixelCount, pixelSamples, diffSamples);
         }
 
         // StaticPropRange range;
@@ -596,7 +596,7 @@ internal static class JxlModularEncodingEncoder
         currRange[1] = stop;
         range[1] = currRange;
 
-        samples.PreQuantizeProperties(range, multiplierInfo, groupPixelCount, channelPixelCount, pixelSamples, diffSamples, options[start].MaxPropertyValues);
+        samples.PreQuantizeProperties(configuration, range, multiplierInfo, groupPixelCount, channelPixelCount, pixelSamples, diffSamples, options[start].MaxPropertyValues);
 
         int totalPixels = 0;
 
@@ -618,9 +618,9 @@ internal static class JxlModularEncodingEncoder
 
         for (int i = start; i < stop; i++)
         {
-            int nb_channels = images[i].Channels.Count;
+            int numChannels = images[i].Channels.Count;
 
-            if (images[i].Width == 0 || images[i].Height == 0 || nb_channels < 1)
+            if (images[i].Width == 0 || images[i].Height == 0 || numChannels < 1)
             {
                 continue;
             }
@@ -642,7 +642,7 @@ internal static class JxlModularEncodingEncoder
                 JxlContextPrediction.SetPredictorMode(options[i].WpMode, wpHeader);
             }
 
-            for (int c = 0; c < nb_channels; c++)
+            for (int c = 0; c < numChannels; c++)
             {
                 if (c >= images[i].MetaChannels &&
                     (images[i].Channels[c].Width > options[i].MaxChannelSize ||
@@ -656,7 +656,7 @@ internal static class JxlModularEncodingEncoder
                     continue;  // skip empty channels
                 }
 
-                GatherTreeData(images[i], c, i, wpHeader, options[i], samples, totalPixels);
+                GatherTreeData(configuration, images[i], c, i, wpHeader, options[i], samples, totalPixels);
             }
         }
 
@@ -724,7 +724,7 @@ internal static class JxlModularEncodingEncoder
             {
                 if (i >= image.MetaChannels &&
                     (image.Channels[i].Width > options.MaxChannelSize ||
-                     image.Channels[i].Height > options.v))
+                     image.Channels[i].Height > options.MaxChannelSize))
                 {
                     break;
                 }
@@ -734,7 +734,7 @@ internal static class JxlModularEncodingEncoder
                     continue;
                 }
 
-                EncodeModularChannelMAANS(image, i, header.WeightedHeader, tree, CollectionsMarshal.AsSpan(tokens)[tokenp..], groupId, options.SkipEncoderFastPath);
+                EncodeModularChannelMAANS(configuration, image, i, header.WeightedHeader, tree, CollectionsMarshal.AsSpan(tokens)[tokenp..], groupId, options.SkipEncoderFastPath);
             }
 
             if (tokenp != tokens.Count)
@@ -746,7 +746,7 @@ internal static class JxlModularEncodingEncoder
         width = imageWidth;
     }
 
-    public static void ModularGenericCompress(JxlModularImage image, JxlModularOptions options, JxlBitWriter writer, JxlAuxiliaryOutput auxOut, JxlLayerType layerType, int groupId)
+    public static void ModularGenericCompress(Configuration configuration, JxlModularImage image, JxlModularOptions options, JxlBitWriter writer, JxlAuxiliaryOutput auxOut, JxlLayerType layerType, int groupId)
     {
         int numChannels = image.Channels.Count;
 
@@ -785,7 +785,7 @@ internal static class JxlModularEncodingEncoder
 
         if (modularOptions.TreeKind == JxlTreeKind.Learn)
         {
-            tree = LearnTree(image, options, 0, 1);
+            tree = LearnTree(configuration, image, options, 0, 1);
         }
         else
         {

@@ -8,7 +8,7 @@ namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular;
 /// <summary>
 /// A wrapper over <see cref="JxlImageI"/> for modular operations.
 /// </summary>
-internal sealed class JxlModularChannel
+internal sealed class JxlModularChannel : IDisposable
 {
     public JxlModularChannel(Configuration configuration, int width, int height, int horizShift, int vertShift)
     {
@@ -78,4 +78,6 @@ internal sealed class JxlModularChannel
     public Span<int> GetRowMinus(int y, int minus) => this.Plane.GetRowMinus(y, minus);
 
     public Span<int> GetRowPlus(int y, int plus) => this.Plane.GetRowPlus(y, plus);
+
+    public void Dispose() => this.Plane.Dispose();
 }

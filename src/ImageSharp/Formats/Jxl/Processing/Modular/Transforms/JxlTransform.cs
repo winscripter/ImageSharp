@@ -2,12 +2,47 @@
 // Licensed under the Six Labors Split License.
 
 using System.Numerics.Tensors;
+using System.Runtime.InteropServices;
 using SixLabors.ImageSharp.Formats.Jxl.Fields;
+using SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Encoding.ContextPrediction;
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Transforms;
 
 internal sealed class JxlTransform : IJxlFields
 {
+    public JxlTransform()
+        : this(JxlTransformType.Invalid)
+    {
+    }
+
+    public JxlTransform(JxlTransformType id)
+    {
+        JxlBundle.Init(this);
+        this.TransformType = id;
+    }
+
+    public JxlTransformType TransformType { get; set; }
+
+    public int BeginC { get; set; }
+
+    public int RctType { get; set; }
+
+    public int NumC { get; set; }
+
+    public int Colors { get; set; }
+
+    public int Deltas { get; set; }
+
+    public List<JxlSqueezeParameters> Squeezes { get; set; } = [];
+
+    public int MaxDeltaError { get; set; }
+
+    public JxlPredictor Predictor { get; set; }
+
+    public bool OrderedPalette { get; set; } = true;
+
+    public bool LossyPalette { get; set; }
+
     public bool Visit(JxlVisitor visitor) => throw new NotImplementedException();
 
     public static void CheckEqualChannels(JxlModularImage image, int c1, int c2)
@@ -19,7 +54,7 @@ internal sealed class JxlTransform : IJxlFields
             throw new InvalidOperationException($"Invalid channel range: {c1}..{c2} (there are only {channelsCount} channels)");
         }
 
-        if (c1 < image.NbMetaChannels && c2 >= image.NbMetaChannels)
+        if (c1 < image.MetaChannels && c2 >= image.MetaChannels)
         {
             throw new InvalidOperationException("Invalid: transforming mix of meta and nonmeta");
         }
@@ -54,6 +89,48 @@ internal sealed class JxlTransform : IJxlFields
 
             min = Math.Min(minRow, min);
             max = Math.Max(maxRow, max);
+        }
+    }
+
+    public void Inverse(Configuration configuration, JxlModularImage input, JxlModularHeader wpHeader)
+    {
+        switch (this.TransformType)
+        {
+            case JxlTransformType.Rct:
+                JxlRct.InverseRct(configuration, input, this.BeginC, this.RctType);
+                break;
+
+            case JxlTransformType.Squeeze:
+                JxlSqueeze.InverseSqueeze(configuration, input, CollectionsMarshal.AsSpan(this.Squeezes));
+                break;
+
+            case JxlTransformType.Palette:
+                JxlPalette.InversePalette(configuration, input, this.BeginC, this.Colors, this.Deltas, this.Predictor, wpHeader);
+                break;
+
+            default:
+                throw new InvalidOperationException($"Unknown transform: {this.TransformType}");
+        }
+    }
+
+    public void MetaApply(Configuration configuration, JxlModularImage image)
+    {
+        switch (this.TransformType)
+        {
+            case JxlTransformType.Rct:
+                CheckEqualChannels(image, this.BeginC, this.BeginC + 2);
+                break;
+
+            case JxlTransformType.Squeeze:
+                JxlSqueeze.MetaSqueeze(configuration, image, this.Squeezes);
+                break;
+
+            case JxlTransformType.Palette:
+                JxlPalette.MetaPalette(configuration, image, this.BeginC, this.BeginC + this.NumC - 1, this.Colors, this.Deltas);
+                break;
+
+            default:
+                throw new InvalidOperationException($"Unknown transform: {this.TransformType}");
         }
     }
 }

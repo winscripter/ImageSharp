@@ -33,7 +33,7 @@ internal static class JxlModularEncoding
                 return false;
             }
 
-            JxlMaNode node = tree[cur.Pos];
+            JxlFlatDecisionNode node = tree[cur.Pos];
 
             // Leaf.
             if (node.Property0 == -1)
@@ -76,7 +76,7 @@ internal static class JxlModularEncoding
                 continue;
             }
 
-            if (node.Properties[0] >= NumStaticProperties)
+            if (node.Properties[0] >= JxlPredictorFacts.StaticProperties)
             {
                 ranges.Push(new(node.SplitValues[0], cur.End, node.ChildID));
                 ranges.Push(new(node.SplitValue0, node.SplitValues[0], node.ChildID + 1));
@@ -87,7 +87,7 @@ internal static class JxlModularEncoding
             }
 
             // <= side
-            if (node.Properties[1] >= NumStaticProperties)
+            if (node.Properties[1] >= JxlPredictorFacts.StaticProperties)
             {
                 ranges.Push(
                     new(node.SplitValues[1], node.SplitValue0, node.ChildID + 2));
@@ -116,12 +116,12 @@ internal static class JxlModularEncoding
             {
                 hasWeightedPrediction = true;
             }
-            else if (p >= NumStaticProperties)
+            else if (p >= JxlPredictorFacts.StaticProperties)
             {
                 hasNonWeighted = true;
             }
 
-            if (p >= NumStaticProperties && p != GradientProp)
+            if (p >= JxlPredictorFacts.StaticProperties && p != GradientProp)
             {
                 gradientOnly = false;
             }
@@ -136,7 +136,7 @@ internal static class JxlModularEncoding
             int cur = nodes.Peek();
             _ = nodes.Dequeue();
 
-            while (globalTree[cur].Property < NumStaticProperties && globalTree[cur].Property != -1)
+            while (globalTree[cur].Property is < JxlPredictorFacts.StaticProperties and not -1)
             {
                 if (staticProps[globalTree[cur].Property] > globalTree[cur].SplitValue)
                 {
@@ -176,7 +176,7 @@ internal static class JxlModularEncoding
             {
                 int currentChild = i == 0 ? globalTree[cur].LeftChild : globalTree[cur].RightChild;
 
-                while (globalTree[currentChild].Property < kNumStaticProperties && globalTree[currentChild].Property != -1)
+                while (globalTree[currentChild].Property < JxlPredictorFacts.StaticProperties && globalTree[currentChild].Property != -1)
                 {
                     if (staticProps[globalTree[currentChild].Property] >
                         globalTree[currentChild].SplitValue)
@@ -220,7 +220,7 @@ internal static class JxlModularEncoding
 
         if (numProps > JxlMaConstants.NumTreeContexts)
         {
-            numProps = (JxlMath.DivCeil(numProps - JxlMaConstants.NumTreeContexts, kExtraPropsPerChannel) * kExtraPropsPerChannel) + JxlMaConstants.NumTreeContexts;
+            numProps = (JxlMath.DivCeil(numProps - JxlMaConstants.NumTreeContexts, JxlContextPrediction.ExtraPropertiesPerChannel) * JxlContextPrediction.ExtraPropertiesPerChannel) + JxlMaConstants.NumTreeContexts;
         }
         else
         {
@@ -281,7 +281,7 @@ internal static class JxlModularEncoding
                         return false;
                     }
                 }
-                else if (n.Property >= NumStaticProperties)
+                else if (n.Property >= JxlPredictorFacts.StaticProperties)
                 {
                     return false;
                 }
