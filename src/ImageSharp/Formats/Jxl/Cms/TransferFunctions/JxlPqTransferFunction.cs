@@ -129,7 +129,6 @@ internal struct JxlPqTransferFunction(float displayIntensityTarget = DefaultInte
         Vector<float> originalSign = x & sign;
         x = Vector.AndNot(sign, x);
 
-
         Vector<float> xto025 = Vector.SquareRoot(Vector.SquareRoot(x * Vector.Create(this.scaleFactorTo10000Nits)));
 
         Vector<float> magnitude = Vector.ConditionalSelect(
