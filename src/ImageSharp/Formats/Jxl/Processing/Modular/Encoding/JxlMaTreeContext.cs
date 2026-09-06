@@ -3,7 +3,7 @@
 
 namespace SixLabors.ImageSharp.Formats.Jxl.Processing.Modular.Encoding;
 
-internal enum JxlMaTreeContext
+internal enum JxlMaTreeContext : byte
 {
     SplitValue,
 

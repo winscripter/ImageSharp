@@ -12,7 +12,7 @@ internal static class JxlContextPrediction
 {
     private const int ExtraPropertiesPerChannel = 4;
 
-    private const int NumberOfProperties = 1;
+    public const int NumberOfProperties = 1;
 
     public static void SetPredictorMode(int i, JxlModularHeader header)
     {
