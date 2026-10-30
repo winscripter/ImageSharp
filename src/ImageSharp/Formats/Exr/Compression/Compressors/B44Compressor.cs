@@ -3,20 +3,58 @@
 
 using System.Numerics.Tensors;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using SixLabors.ImageSharp.Memory;
 
 namespace SixLabors.ImageSharp.Formats.Exr.Compression.Compressors;
 
-internal class B44Compressor : ExrBaseCompressor
+internal sealed class B44Compressor : ExrBaseCompressor
 {
     public B44Compressor(Stream output, MemoryAllocator allocator, uint bytesPerBlock, uint bytesPerRow, uint rowsPerBlock, int width)
         : base(output, allocator, bytesPerBlock, bytesPerRow, rowsPerBlock, width)
     {
     }
 
-    public override uint CompressRowBlock(Span<byte> rows, int rowCount) => throw new NotImplementedException();
+    public override uint CompressRowBlock(Span<byte> rows, int rowCount)
+    {
+        Span<ushort> halves = MemoryMarshal.Cast<byte, ushort>(rows);
 
-    private static int Pack(in InlineArray16<ushort> s, ref InlineArray14<byte> b, int flatFields, int exactMax)
+        // Bytes to output to the stream. This is a reusable scratch space.
+        Span<byte> data = stackalloc byte[16];
+        data.Clear();
+
+        uint bytesWritten = 0;
+        int imageWidth = (int)(this.BytesPerRow / 2);
+        int imageHeight = rows.Length / (int)this.BytesPerRow;
+
+        Span<ushort> block4x4 = stackalloc ushort[4 * 4];
+
+        for (int y = 0; y < imageHeight; y += 4)
+        {
+            for (int x = 0; x < imageWidth; x += 4)
+            {
+                for (int row = 0; row < 4; row++)
+                {
+                    int sourceY = Math.Min(y + row, imageHeight - 1);
+                    int sourceX = Math.Min(x, imageWidth - 1);
+
+                    for (int column = 0; column < 4; column++)
+                    {
+                        int clampedX = Math.Min(x + column, imageWidth - 1);
+                        block4x4[(row * 4) + column] = halves[(sourceY * imageWidth) + clampedX];
+                    }
+                }
+
+                uint bytesForThis4x4Block = Pack(block4x4, data, 0);
+                this.Output.Write(data[..(int)bytesForThis4x4Block]);
+                bytesWritten += bytesForThis4x4Block;
+            }
+        }
+
+        return bytesWritten;
+    }
+
+    private static uint Pack(ReadOnlySpan<ushort> s, Span<byte> b, int flatFields)
     {
         Span<int> d = stackalloc int[16];
         Span<int> r = stackalloc int[16].Slice(0, 15);
@@ -41,14 +79,14 @@ internal class B44Compressor : ExrBaseCompressor
         }
 
         int tMax = TensorPrimitives.Max<ushort>(t);
-        int shift = 0;
+        int shift = -1;
 
         int rMin = 0;
         int rMax = 0;
 
         do
         {
-            shift += 1;
+            shift++;
 
             // Compute absolute differences d[n] between
             // tMax and t[n]. Shift and round the

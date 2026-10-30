@@ -38,6 +38,7 @@ internal static class ExrCompressorFactory
             ExrCompression.None => new NoneExrCompressor(output, allocator, bytesPerBlock, bytesPerRow, rowsPerBlock, width),
             ExrCompression.Zips => new ZipExrCompressor(output, allocator, bytesPerBlock, bytesPerRow, rowsPerBlock, width, compressionLevel),
             ExrCompression.Zip => new ZipExrCompressor(output, allocator, bytesPerBlock, bytesPerRow, rowsPerBlock, width, compressionLevel),
+            ExrCompression.B44 => new B44Compressor(output, allocator, bytesPerBlock, bytesPerRow, rowsPerBlock, width),
             _ => throw ExrThrowHelper.NotSupportedCompressor(method.ToString()),
         };
 }
