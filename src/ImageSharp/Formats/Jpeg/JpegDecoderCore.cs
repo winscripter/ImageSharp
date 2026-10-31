@@ -331,7 +331,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
         Span<byte> markerBuffer = stackalloc byte[2];
 
         // Check for the Start Of Image marker.
-        stream.Read(markerBuffer);
+        stream.ReadExactly(markerBuffer);
         JpegFileMarker fileMarker = new(markerBuffer[1], 0);
         if (fileMarker.Marker != JpegConstants.Markers.SOI)
         {
@@ -827,7 +827,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
 
         Span<byte> temp = stackalloc byte[2 * 16 * 4];
 
-        stream.Read(temp, 0, JFifMarker.Length);
+        stream.ReadExactly(temp[..JFifMarker.Length]);
         if (!JFifMarker.TryParse(temp, out this.jFif))
         {
             this.ThrowOrIgnoreNonStrictSegmentError("Invalid App0 marker.");
@@ -884,14 +884,14 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
         Span<byte> temp = stackalloc byte[2 * 16 * 4];
 
         // XMP marker is the longer then the EXIF marker, so first try read the EXIF marker bytes.
-        stream.Read(temp, 0, exifMarkerLength);
+        stream.ReadExactly(temp[..exifMarkerLength]);
         remaining -= exifMarkerLength;
 
         if (ProfileResolver.IsProfile(temp, ProfileResolver.ExifMarker))
         {
             this.hasExif = true;
             byte[] profile = new byte[remaining];
-            stream.Read(profile, 0, remaining);
+            stream.ReadExactly(profile, 0, remaining);
 
             if (this.exifData is null)
             {
@@ -924,7 +924,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
             {
                 this.hasXmp = true;
                 byte[] profile = new byte[remaining];
-                stream.Read(profile, 0, remaining);
+                stream.ReadExactly(profile, 0, remaining);
 
                 if (this.xmpData is null)
                 {
@@ -966,7 +966,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
         }
 
         Span<byte> identifier = stackalloc byte[icclength];
-        stream.Read(identifier);
+        stream.ReadExactly(identifier);
         remaining -= icclength; // We have read it by this point
 
         if (ProfileResolver.IsProfile(identifier, ProfileResolver.IccMarker))
@@ -1027,12 +1027,12 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
         }
 
         Span<byte> temp = stackalloc byte[2 * 16 * 4];
-        stream.Read(temp, 0, ProfileResolver.AdobePhotoshopApp13Marker.Length);
+        stream.ReadExactly(temp[..ProfileResolver.AdobePhotoshopApp13Marker.Length]);
         remaining -= ProfileResolver.AdobePhotoshopApp13Marker.Length;
         if (ProfileResolver.IsProfile(temp, ProfileResolver.AdobePhotoshopApp13Marker))
         {
             Span<byte> blockDataSpan = remaining <= 128 ? stackalloc byte[remaining] : new byte[remaining];
-            stream.Read(blockDataSpan);
+            stream.ReadExactly(blockDataSpan);
 
             while (blockDataSpan.Length > 12)
             {
@@ -1171,7 +1171,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
 
         Span<byte> temp = stackalloc byte[2 * 16 * 4];
 
-        stream.Read(temp, 0, markerLength);
+        stream.ReadExactly(temp[..markerLength]);
         remaining -= markerLength;
 
         if (AdobeMarker.TryParse(temp, out this.adobe))
@@ -1231,7 +1231,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
                         JpegThrowHelper.ThrowBadMarker(nameof(JpegConstants.Markers.DQT), remaining);
                     }
 
-                    stream.Read(temp, 0, 64);
+                    stream.ReadExactly(temp[..64]);
                     remaining -= 64;
 
                     // Parsing quantization table & saving it in natural order
@@ -1250,7 +1250,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
                         JpegThrowHelper.ThrowBadMarker(nameof(JpegConstants.Markers.DQT), remaining);
                     }
 
-                    stream.Read(temp, 0, 128);
+                    stream.ReadExactly(temp[..128]);
                     remaining -= 128;
 
                     // Parsing quantization table & saving it in natural order
@@ -1370,7 +1370,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
         }
 
         // components*3 bytes: component data
-        stream.Read(temp, 0, remaining);
+        stream.ReadExactly(temp[..remaining]);
 
         // No need to pool this. They max out at 4
         this.Frame.ComponentIds = new byte[componentCount];
@@ -1489,7 +1489,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
                     JpegThrowHelper.ThrowInvalidImageContentException($"Bad huffman table index: {tableIndex}.");
                 }
 
-                stream.Read(huffmanLengthsSpan, 1, 16);
+                stream.ReadExactly(huffmanLengthsSpan.Slice(1, 16));
 
                 int codeLengthSum = 0;
                 for (int j = 1; j < 17; j++)
@@ -1504,7 +1504,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
                     JpegThrowHelper.ThrowInvalidImageContentException("Huffman table has excessive length.");
                 }
 
-                stream.Read(huffmanValuesSpan, 0, codeLengthSum);
+                stream.ReadExactly(huffmanValuesSpan[..codeLengthSum]);
 
                 i += 17 + codeLengthSum;
 
@@ -1574,7 +1574,7 @@ internal sealed class JpegDecoderCore : ImageDecoderCore, IRawJpegData
         Span<byte> temp = stackalloc byte[2 * 16 * 4];
 
         // selectorsCount*2 bytes: component index + huffman tables indices
-        stream.Read(temp, 0, selectorsBytes);
+        stream.ReadExactly(temp[..selectorsBytes]);
 
         this.Frame.Interleaved = this.Frame.ComponentCount == selectorsCount;
         for (int i = 0; i < selectorsBytes; i += 2)

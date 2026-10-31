@@ -557,7 +557,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
 
                         Span<byte> run = bytesToRead <= 128 ? scratchBuffer[..bytesToRead] : new byte[bytesToRead];
 
-                        stream.Read(run);
+                        stream.ReadExactly(run);
 
                         int idx = 0;
                         for (int i = 0; i < max; i++)
@@ -663,7 +663,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
 
                         Span<byte> run = length <= 128 ? scratchBuffer[..length] : new byte[length];
 
-                        stream.Read(run);
+                        stream.ReadExactly(run);
 
                         run.CopyTo(buffer[count..]);
 
@@ -745,7 +745,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
 
                         Span<byte> run = length3 <= 128 ? scratchBuffer[..length3] : new byte[length3];
 
-                        stream.Read(run);
+                        stream.ReadExactly(run);
 
                         run.CopyTo(buffer[(uncompressedPixels * 3)..]);
 
@@ -1438,7 +1438,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
         };
 
         // Read the header size.
-        stream.Read(buffer, 0, BmpInfoHeader.HeaderSizeSize);
+        stream.ReadExactly(buffer[..BmpInfoHeader.HeaderSizeSize]);
 
         int headerSize = BinaryPrimitives.ReadInt32LittleEndian(buffer);
         if (headerSize is < BmpInfoHeader.CoreSize or > BmpInfoHeader.MaxHeaderSize)
@@ -1447,7 +1447,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
         }
 
         // Read the rest of the header.
-        stream.Read(buffer, BmpInfoHeader.HeaderSizeSize, headerSize - BmpInfoHeader.HeaderSizeSize);
+        stream.ReadExactly(buffer[BmpInfoHeader.HeaderSizeSize..headerSize]);
 
         BmpInfoHeaderType infoHeaderType = BmpInfoHeaderType.WinVersion2;
         if (headerSize == BmpInfoHeader.CoreSize)
@@ -1473,7 +1473,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
             if (this.infoHeader.Compression == BmpCompression.BitFields)
             {
                 Span<byte> bitfieldsBuffer = stackalloc byte[12];
-                stream.Read(bitfieldsBuffer);
+                stream.ReadExactly(bitfieldsBuffer);
                 Span<byte> data = bitfieldsBuffer;
                 this.infoHeader.RedMask = BinaryPrimitives.ReadInt32LittleEndian(data[..4]);
                 this.infoHeader.GreenMask = BinaryPrimitives.ReadInt32LittleEndian(data.Slice(4, 4));
@@ -1482,7 +1482,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
             else if (this.infoHeader.Compression == BmpCompression.BI_ALPHABITFIELDS)
             {
                 Span<byte> bitfieldsBuffer = stackalloc byte[16];
-                stream.Read(bitfieldsBuffer);
+                stream.ReadExactly(bitfieldsBuffer);
                 Span<byte> data = bitfieldsBuffer;
                 this.infoHeader.RedMask = BinaryPrimitives.ReadInt32LittleEndian(data[..4]);
                 this.infoHeader.GreenMask = BinaryPrimitives.ReadInt32LittleEndian(data.Slice(4, 4));
@@ -1589,7 +1589,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
     private void ReadFileHeader(BufferedReadStream stream)
     {
         Span<byte> buffer = stackalloc byte[BmpFileHeader.Size];
-        stream.Read(buffer, 0, BmpFileHeader.Size);
+        stream.ReadExactly(buffer[..BmpFileHeader.Size]);
 
         short fileTypeMarker = BinaryPrimitives.ReadInt16LittleEndian(buffer);
         switch (fileTypeMarker)
@@ -1600,7 +1600,7 @@ internal sealed class BmpDecoderCore : ImageDecoderCore
             case BmpConstants.TypeMarkers.BitmapArray:
                 // Because we only decode the first bitmap in the array, the array header will be ignored.
                 // The bitmap file header of the first image follows the array header.
-                stream.Read(buffer, 0, BmpFileHeader.Size);
+                stream.ReadExactly(buffer[..BmpFileHeader.Size]);
                 this.fileHeader = BmpFileHeader.Parse(buffer);
                 if (this.fileHeader.Value.Type != BmpConstants.TypeMarkers.Bitmap)
                 {

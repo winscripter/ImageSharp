@@ -932,7 +932,7 @@ internal sealed class TgaDecoderCore : ImageDecoderCore
     {
         Span<byte> buffer = stackalloc byte[TgaFileHeader.Size];
 
-        stream.Read(buffer, 0, TgaFileHeader.Size);
+        stream.ReadExactly(buffer[..TgaFileHeader.Size]);
         this.fileHeader = TgaFileHeader.Parse(buffer);
         this.Dimensions = new Size(this.fileHeader.Width, this.fileHeader.Height);
 
